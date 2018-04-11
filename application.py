@@ -1,8 +1,9 @@
 import os
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask
+from flask import Flask, _app_ctx_stack
 
 app = Flask(__name__)
+app.config['DATABASE'] = 'tmp/application.db'
 
 def get_db():
     top = _app_ctx_stack.top
@@ -17,7 +18,7 @@ def init_db():
         db.cursor().executescript(f.read())
     db.commit()
 
-@app.cli.command('initdb'):
+@app.cli.command('initdb')
 def initdb_command():
     if not os.path.exists('tmp/application.db'):
         os.makedirs(os.path.dirname(app.config['DATABASE']), exist_ok = True)
