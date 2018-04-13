@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 from flask import Flask, render_template
-=======
 import os
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, _app_ctx_stack
 
->>>>>>> 784463ccf5a927f66938a1239513f65cd6f6e357
 app = Flask(__name__)
 app.config['DATABASE'] = 'tmp/application.db'
 
@@ -30,10 +27,5 @@ def initdb_command():
     print('Initialized the database')
 
 @app.route('/')
-<<<<<<< HEAD
 def studentClass():
     return render_template("studentClass.html")
-=======
-def index():
-    return 'Hello, World!'
->>>>>>> 784463ccf5a927f66938a1239513f65cd6f6e357

@@ -1,13 +1,14 @@
 # CS50-Final-Project
 CS50 Final Project - 2018
 
-~ This is a web app that tracks student project developed for the 1 to 1 teaching model. 
+~ This is a web app that tracks student project developed for the 1 to 1 teaching model.
 
-Windows PowerShell: 
+Windows PowerShell:
 
   > $env:FLASK_APP = "application.py"
   > $env:FLASK_DEBUG = "True"
+  > flask initdb
   > flask run
-  
-  the application will run on 
+
+  the application will run on
   http://localhost:5000/
