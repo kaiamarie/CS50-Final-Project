@@ -1,6 +1,6 @@
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route('/')
-def hello_word():
-    return 'Hello, World!'
+def studentClass():
+    return render_template("studentClass.html")
