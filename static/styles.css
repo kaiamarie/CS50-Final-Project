@@ -1,3 +1,7 @@
+body {
+  background-color: #ffebee
+}
+
 header, footer {
   background-color: #00695c;
   color: #e0f2f1;
@@ -5,13 +9,49 @@ header, footer {
   text-align: center;
 }
 
+.box {
+  background-color: #f1f8e9;
+  border: 5px solid transparent;
+  background-clip:padding-box;
+}
+
+.asidebox {
+  background-color: transparent;
+  background-clip:border-box;
+  padding-left: 0px;
+  padding-top:5px;
+  padding-bottom: 10px;
+}
+
+.sidebox {
+  text-align: center;
+  background-color:#f1f8e9;
+  border-top: 10px solid transparent;
+  border-bottom: 2.5px solid transparent;
+  border-left: 0px;
+  border-right: 0px;
+  background-clip:padding-box;
+}
+
+.section_heading {
+  color: #ef5350;
+}
+
+.daily_lesson {
+  background-color: #e0e0e0;
+}
+
 
 aside {
-  background-color: #00695c;
+  background-color: #eceff1;
   text-align: center;
-  color: #e0f2f1;
+  color: #37474f;
+  padding: 5px;
 }
 
 section {
+  background-color: #eceff1;
   text-align: center;
+  color: #37474f;
+  padding: 30px;
 }
