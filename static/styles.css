@@ -23,9 +23,17 @@ header, footer {
   padding-bottom: 10px;
 }
 
+.mainbox {
+  background-color: transparent;
+  background-clip:border-box;
+  padding-left: 0px;
+  padding-top:5px;
+  padding-bottom: 10px;
+}
+
 .sidebox {
   text-align: center;
-  background-color:#f1f8e9;
+  background-color: #81d4fa;
   border-top: 10px solid transparent;
   border-bottom: 2.5px solid transparent;
   border-left: 0px;
@@ -41,6 +49,10 @@ header, footer {
   background-color: #e0e0e0;
 }
 
+.homework_add {
+  background-color: #f57f17
+
+}
 
 aside {
   background-color: #eceff1;
