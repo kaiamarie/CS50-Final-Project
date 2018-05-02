@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+<div class="justify-content-center row">
+<form action="/register" method="post">
+
+
+
+            <div class="form-row regform justify-content-center">
+                    <input type="text" class="form-control" id="email" placeholder="Email" required style="margin-bottom: 5px;">
+                    <input type="text" class="form-control" id="username" placeholder="Username" required style="margin-bottom: 5px;">
+                    <input type="password" class="form-control" id="password" placeholder="Password" required style="margin-bottom: 5px;">
+                    <input type="password" class="form-control" id="confirmation" placeholder="Confirm Password" required style="margin-bottom: 5px;">
+
+                    <input class="atradio justify-content-center" type="radio" name="user_type" label="Adviser" id="adviser" required style="margin-right: 5px;">
+                    I am an Adviser
+                    <input class="atradio justify-content-center" type="radio" name="user_type" label="Teacher" id="teacher" required style="margin-right: 5px; margin-left: 15px;">
+                    I am a Teacher
+            </div>
+            <div>
+                <p></p>
+                <button onclick="return passcheck()" class="btn btn-primary" type="submit">Register</button>
+            </div>
+
+
+</form>
+</div>
+{% endblock %}
