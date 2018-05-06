@@ -8,10 +8,10 @@
 
 
 <div class="row justify-content-center">
-    <form>
+    <form action="/login" method="post">
         <div class="form-row">
-                <input type="text" class="form-control" id="username" placeholder="Username" required style="margin-bottom: 5px;">
-                <input type="password" class="form-control" id="password" placeholder="Password" required style="margin-bottom: 5px;">
+                <input type="text" class="form-control" name="username" id="username" placeholder="Username" required style="margin-bottom: 5px;">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required style="margin-bottom: 5px;">
         </div>
         <button class="btn btn-primary" type="submit">Login</button>
     </form>
