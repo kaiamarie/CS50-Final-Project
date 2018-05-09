@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Class
+{% endblock %}
+
+{% block main %}
+  <h1 class="display-2">Add a Class</h1>
+
+
+  <h4 class="display-4">Add a class for your students to sign up for!
+    <br>Register students for the class with the <b>Assign Class</b> tab.<br><br></h4>
+  <div class="justify-content-center row">
+  <form action="/addclass" method="post">
+
+              <div class="form-row regform justify-content-center">
+                      <input type="text" class="form-control" name="classtitle" id="classtitle" placeholder="Class Name" required style="margin-bottom: 5px;">
+                      <input type="number" step="any" class="form-control" name="credit" id="credit" placeholder="Credits" required style="margin-bottom: 5px;">
+                      <select class="form-control" name="department" id="department" placeholder="Department" required style="margin-bottom: 5px;">
+                          <option value="foreignlanguage">Foreign Language</option>
+                          <option value="humanities">Humanities</option>
+                          <option value="math">Math</option>
+                          <option value="science">Science</option>
+                          <option value="socialstudies">Social Studies</option>
+                          <option value="technology">Technology</option>
+                      </select>
+              </div>
+              <div>
+                  <p></p>
+                  <button class="btn btn-primary" type="submit">Add Class</button>
+              </div>
+  </form>
+  </div>
+
+{% endblock %}
+
+{% block sidenav %}
+  <div id="class_list" style="padding-left: 10px; font-size: 16px;">
+      <h1 class="display-4">Classes</h1>
+
+      <b>Foreign Language</b><br>
+          {%for class in flclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Humanities</b><br>
+          {%for class in humclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Math</b><br>
+          {%for class in mathclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Science</b><br>
+          {%for class in sciclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Social Sciences</b><br>
+          {%for class in ssclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Technology</b><br>
+          {%for class in techclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+</div>
+
+{% endblock %}

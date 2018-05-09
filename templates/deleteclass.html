@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Class
+{% endblock %}
+
+{% block main %}
+  <h1 class="display-2">Delete a Class</h1>
+
+
+  <h4 class="display-4">Warning! This will permanently delete the class file.
+    <br>Requirements and students enrolled will also be deleted .<br><br></h4>
+  <div class="justify-content-center row">
+  <form action="/deleteclass" method="post">
+
+        <div class="form-row regform justify-content-center">
+                <select class="form-control" name="classtitle" id="classtitle" placeholder="Select a Class" required style="margin-bottom: 5px;">
+                  {%for class in classes%}
+                      <br>
+                    <option value="{{  class.class_title }}">{{  class.class_title }}</option>
+                    {%endfor%}
+                </select>
+        </div>
+        <div>
+            <p></p>
+            <button class="btn btn-primary" type="submit">Delete Class</button>
+        </div>
+  </form>
+  </div>
+
+{% endblock %}
+
+{% block sidenav %}
+  <div id="class_list" style="padding-left: 10px; font-size: 16px;">
+      <h1 class="display-4">Classes</h1>
+
+      <b>Foreign Language</b><br>
+          {%for class in flclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Humanities</b><br>
+          {%for class in humclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Math</b><br>
+          {%for class in mathclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Science</b><br>
+          {%for class in sciclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Social Sciences</b><br>
+          {%for class in ssclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Technology</b><br>
+          {%for class in techclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+</div>
+
+{% endblock %}

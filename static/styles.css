@@ -17,14 +17,6 @@ body {
   padding-right: 5px;
 }
 
-aside {
-  background-color: #eceff1;
-  text-align: center;
-  color: #37474f;
-  padding-top: 0px;
-  overflow-y: scroll;
-}
-
 .main {
   background-color: #eceff1;
   text-align: center;
@@ -32,16 +24,7 @@ aside {
   padding-top: 100px;
   padding-bottom: 20px;
   height: 100%;
-}
 
-.error{
-	display: none;
-	margin-left: 10px;
-}
-
-.error_show{
-	color: red;
-	margin-left: 10px;
 }
 
 .sidenav {
@@ -54,7 +37,10 @@ aside {
     overflow-x: hidden;
     padding-top: 80px;
     padding-bottom: 80px;
+}
 
+.subtitle {
+      font-color: #2BBBAD;
 }
 
 .sidenav a {

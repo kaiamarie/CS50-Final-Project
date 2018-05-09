@@ -52,6 +52,7 @@ create table class (
     id integer primary key autoincrement,
     class_title text not null,
     credits number,
+    department text,
     created_at datetime,
     updated_at datetime
 );

@@ -1,0 +1,18 @@
+To Get Everything Going:
+
+
+
+Step 1: Copy the following into Powershell
+
+	C:\Users\Kaia\Documents\VirtualEnv\cs50_dev\Scripts\activate.ps1
+
+Step 2: 
+
+	cd Documents\GitHub\Cs50-Final-Project
+
+Step 3: 
+
+	$env:FLASK_APP = "application.py"
+	$env:FLASK_DEBUG = "True"
+	flask initdb
+	flask run

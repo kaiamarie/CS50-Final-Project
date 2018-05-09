@@ -17,7 +17,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script type="text/javascript" src="static/scripts.js"></script>
 
 
   <title>Lesson Thread: {% block title %}{% endblock %}</title>
@@ -36,8 +35,10 @@
             {% if session.user_id %}
                 {% if session.user_adviser %}
                     <ul class="navbar-nav mr-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="/enroll">Enroll</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/enroll">Enroll Student</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/assignclass">Assign Class</a></li>
                         <li class="nav-item"><a class="nav-link" href="/addclass">Add Class</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/deleteclass">Delete Class</a></li>
                         <li class="nav-item"><a class="nav-link" href="/minreq">Requriements</a></li>
                     </ul>
                 {% else %}
@@ -58,15 +59,15 @@
             </div>
         </nav>
     </header>
-<div class="container-fluid">
+<div id="sidebar" class="container-fluid">
 
     {% if session.user_id %}
-    <div class="sidenav">
+    <div id="sidenav" class="sidenav">
         {% block sidenav %}{% endblock %}
     </div>
     {% endif %}
 
-    <div class="main">
+    <div class="main" style="margin-left: 200px;">
       {% block main %}{% endblock %}
     </div>
   </div>

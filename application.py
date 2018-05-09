@@ -50,7 +50,7 @@ def login():
                           (request.form.get("username"),)).fetchone()
 
         # Ensure username is registered
-        if len(rows) == 0:
+        if rows is None:
             return apology("Sorry, we couldn't find you. To access LessonThread, please register.")
 
         # Ensure password is correct
@@ -126,7 +126,7 @@ def register():
             get_db().execute("INSERT INTO adviser (user_id, created_at, updated_at) VALUES (?, ?, ?)",
                     (user_id[0][0], datetime, datetime,))
             get_db().commit()
-            session["user_type"] = "adviser"
+            session["user_adviser"] = "true"
             print("adviser check")
             return render_template("adviser_home.html")
 
@@ -135,7 +135,7 @@ def register():
             get_db().execute("INSERT INTO teacher (user_id, created_at, updated_at) VALUES (?, ?, ?)",
                     (user_id[0][0], datetime, datetime,))
             get_db().commit()
-            session["user_type"] = "teacher"
+            session["user_teacher"] = "true"
             print("teacher check")
             return render_template("teacher_home.html")
         else:
@@ -157,7 +157,44 @@ def logout():
 @app.route("/addclass", methods=["GET", "POST"])
 def addclass():
     if request.method == "POST":
+        datetime = time.asctime(time.localtime(time.time()))
 
+        get_db().execute("INSERT INTO class (class_title, department, credits, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+                   (request.form.get("classtitle"), request.form.get("department"), request.form.get("credit"), datetime, datetime,))
+        get_db().commit()
 
+        return apology("Add class in progress...")
     else:
-        return render_template("addclass.html")
+        # get classes for the side list
+        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("foreignlanguage",)).fetchall()
+        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("humanities",)).fetchall()
+        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("math",)).fetchall()
+        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("science",)).fetchall()
+        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("socialstudies",)).fetchall()
+        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("technology",)).fetchall()
+
+
+        return render_template("addclass.html", flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
+
+@app.route("/deleteclass", methods=["GET", "POST"])
+def deleteclass():
+    if request.method == "POST":
+
+        get_db().execute("DELETE FROM class WHERE class_title = ?",
+                   (request.form.get("classtitle"),))
+        get_db().commit()
+
+        return apology("Delete class in progress...")
+    else:
+        # get classes for the side list
+        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("foreignlanguage",)).fetchall()
+        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("humanities",)).fetchall()
+        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("math",)).fetchall()
+        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("science",)).fetchall()
+        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("socialstudies",)).fetchall()
+        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("technology",)).fetchall()
+
+
+        classes = get_db().execute("SELECT class_title FROM class").fetchall()
+
+        return render_template("deleteclass.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
