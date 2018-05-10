@@ -198,3 +198,19 @@ def deleteclass():
         classes = get_db().execute("SELECT class_title FROM class").fetchall()
 
         return render_template("deleteclass.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
+
+
+@app.route("/enrollstudent", methods=["GET", "POST"])
+def enrollstudent():
+    if request.method == "POST":
+        datetime = time.asctime(time.localtime(time.time()))
+
+        get_db().execute("INSERT INTO student (lastname, firstname, grade, enrollment_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+                    (request.form.get("lastname"), request.form.get("firstname"), request.form.get("grade"), request.form.get("enrolldate"), datetime, datetime,))
+        get_db().commit()
+
+        return apology("Enroll Student in progress...")
+    else:
+        students = get_db().execute("SELECT lastname, firstname, grade FROM student ORDER BY lastname ASC")
+
+        return render_template("enrollstudent.html", students=students)
