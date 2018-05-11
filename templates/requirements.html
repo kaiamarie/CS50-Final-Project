@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Requirements
+{% endblock %}
+
+{% block main %}
+  <h1 class="display-2">Requirements</h1>
+  <h4 class="display-4">Select a class below to assign requirements.<br><br></h4>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-2">
+        <h3>Foreign Language</h3>
+        {%for class in flclasses%}
+          <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
+            <br><br>
+        {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Humanities</h3>
+        {%for class in humclasses%}
+        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
+          <br><br>
+        {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Math</h3>
+        {%for class in mathclasses%}
+        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
+          <br><br>
+        {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Science</h3>
+        {%for class in sciclasses%}
+        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
+          <br><br>
+        {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Social Science</h3>
+        {%for class in ssclasses%}
+        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
+          <br><br>
+        {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Technology</h3>
+        {%for class in techclasses%}
+        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
+          <br><br>
+        {%endfor%}
+      </div>
+    </div>
+  </div>
+
+
+
+
+{% endblock %}
+
+{% block sidenav %}
+  <div id="class_list" style="padding-left: 10px; font-size: 16px;">
+      <h1 class="display-4">Classes</h1>
+
+      <b>Foreign Language</b><br>
+          {%for class in flclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Humanities</b><br>
+          {%for class in humclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Math</b><br>
+          {%for class in mathclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Science</b><br>
+          {%for class in sciclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Social Science</b><br>
+          {%for class in ssclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+      <b>Technology</b><br>
+          {%for class in techclasses%}
+              {{  class.class_title }}<br>
+          {%endfor%}
+</div>
+
+{% endblock %}

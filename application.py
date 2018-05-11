@@ -108,8 +108,8 @@ def register():
         passwordhash = generate_password_hash(request.form.get("password"))
 
         # Insert username and hash of password into database (and auotgened ID)
-        get_db().execute("INSERT INTO user (email, username, pw_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-                   (request.form.get("email"), request.form.get("username"), passwordhash, datetime, datetime,))
+        get_db().execute("INSERT INTO user (email, username, pw_hash, created_at, updated_at, firstname, lastname) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                   (request.form.get("email"), request.form.get("username"), passwordhash, datetime, datetime, request.form.get("firstname"), request.form.get("lastname"),))
         get_db().commit()
 
         # add adviser/teacher information
@@ -163,16 +163,15 @@ def addclass():
                    (request.form.get("classtitle"), request.form.get("department"), request.form.get("credit"), datetime, datetime,))
         get_db().commit()
 
-        return apology("Add class in progress...")
+        return redirect("/addclass")
     else:
         # get classes for the side list
-        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("foreignlanguage",)).fetchall()
-        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("humanities",)).fetchall()
-        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("math",)).fetchall()
-        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("science",)).fetchall()
-        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("socialstudies",)).fetchall()
-        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("technology",)).fetchall()
-
+        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
+        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("humanities",)).fetchall()
+        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("math",)).fetchall()
+        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("science",)).fetchall()
+        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("socialstudies",)).fetchall()
+        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("technology",)).fetchall()
 
         return render_template("addclass.html", flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
@@ -187,12 +186,12 @@ def deleteclass():
         return apology("Delete class in progress...")
     else:
         # get classes for the side list
-        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("foreignlanguage",)).fetchall()
-        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("humanities",)).fetchall()
-        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("math",)).fetchall()
-        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("science",)).fetchall()
-        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("socialstudies",)).fetchall()
-        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?", ("technology",)).fetchall()
+        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
+        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("humanities",)).fetchall()
+        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("math",)).fetchall()
+        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("science",)).fetchall()
+        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("socialstudies",)).fetchall()
+        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("technology",)).fetchall()
 
 
         classes = get_db().execute("SELECT class_title FROM class").fetchall()
@@ -214,3 +213,44 @@ def enrollstudent():
         students = get_db().execute("SELECT lastname, firstname, grade FROM student ORDER BY lastname ASC")
 
         return render_template("enrollstudent.html", students=students)
+
+@app.route("/assignclass", methods=["GET", "POST"])
+def assignclass():
+    if request.method == "POST":
+        datetime = time.asctime(time.localtime(time.time()))
+
+        get_db().execute("INSERT INTO studentClass (student_id, class_id, teacher_id, hours_purchased, start_date, end_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (request.form.get("studentname"), request.form.get("class"), request.form.get("teacher"), request.form.get("hours"), request.form.get("startdate"), request.form.get("enddate"), datetime, datetime,))
+        get_db().commit()
+
+        return apology("Assign Students in progress...")
+    else:
+        students = get_db().execute("SELECT id, lastname, firstname, grade FROM student ORDER BY lastname ASC").fetchall()
+        classes = get_db().execute("SELECT id, class_title FROM class ORDER BY class_title ASC").fetchall()
+
+        teachers = get_db().execute("SELECT user_id, firstname, lastname, user.id FROM teacher INNER JOIN user ON user.id=teacher.user_id").fetchall()
+        return render_template("assignclass.html", students=students, classes=classes, teachers=teachers)
+
+@app.route("/requirements", methods=["GET", "POST"])
+def requirements():
+    if request.method == "POST":
+        datetime = time.asctime(time.localtime(time.time()))
+
+        #get_db().execute("INSERT INTO student (lastname, firstname, grade, enrollment_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+                    #(request.form.get("lastname"), request.form.get("firstname"), request.form.get("grade"), request.form.get("enrolldate"), datetime, datetime,))
+        #get_db().commit()
+
+        return apology("Requirements in progress...")
+    else:
+        # get classes for the side list
+        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
+        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("humanities",)).fetchall()
+        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("math",)).fetchall()
+        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("science",)).fetchall()
+        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("socialstudies",)).fetchall()
+        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("technology",)).fetchall()
+
+
+        classes = get_db().execute("SELECT class_title FROM class").fetchall()
+
+        return render_template("requirements.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)

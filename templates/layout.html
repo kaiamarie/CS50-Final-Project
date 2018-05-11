@@ -39,7 +39,7 @@
                         <li class="nav-item"><a class="nav-link" href="/assignclass">Assign Class</a></li>
                         <li class="nav-item"><a class="nav-link" href="/addclass">Add Class</a></li>
                         <li class="nav-item"><a class="nav-link" href="/deleteclass">Delete Class</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/minreq">Requriements</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/requirements">Requriements</a></li>
                     </ul>
                 {% else %}
                     <ul class="navbar-nav mr-auto mt-2">
@@ -65,11 +65,17 @@
     <div id="sidenav" class="sidenav">
         {% block sidenav %}{% endblock %}
     </div>
-    {% endif %}
 
     <div class="main" style="margin-left: 200px;">
       {% block main %}{% endblock %}
     </div>
+
+    {% else %}
+    <div class="main">
+      {% block longmain %}{% endblock %}
+    </div>
+    {% endif %}
+
   </div>
 
 

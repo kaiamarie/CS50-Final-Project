@@ -2,6 +2,8 @@ drop table if exists user;
 create table user (
     id integer primary key autoincrement,
     username text not null,
+    firstname text not null,
+    lastname text not null,
     email text not null,
     pw_hash text not null,
     created_at datetime,
@@ -24,6 +26,7 @@ create table studentClass (
     id integer primary key autoincrement,
     student_id integer not null,
     class_id integer not null,
+    teacher_id integer not null,
     hours_purchased integer,
     start_date date,
     end_date date,

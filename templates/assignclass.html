@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Assign Class
+{% endblock %}
+
+{% block main %}
+  <h1 class="display-2">Assign a Class</h1>
+  <h4 class="display-4">Sign a student up for a class
+    <br>To assign classes to the student, us the <b>Assign Class</b> tab.<br><br></h4>
+  <div class="justify-content-center row">
+  <form action="/assignclass" method="post">
+
+              <div class="form-row regform justify-content-center">
+                  <select class="form-control" name="studentname" id="studentname" required style="margin-bottom: 5px;">
+                      <option value="">Select a Student</option>
+                        {%for student in students%}
+                          <option value="{{  student.id }}">{{  student.lastname }}, {{  student.firstname  }}</option>
+                        {%endfor%}
+                  </select>
+                  <select class="form-control" name="class" id="class" required style="margin-bottom: 5px;">
+                      <option value="">Select a Class</option>
+                        {%for class in classes%}
+                          <option value="{{  class.id }}">{{  class.class_title }}</option>
+                        {%endfor%}
+                  </select>
+                  <select class="form-control" name="teacher" id="teacher" required style="margin-bottom: 5px;">
+                      <option value="">Select a Teacher</option>
+                        {%for teacher in teachers%}
+                          <option value="{{  teacher.id }}">{{  teacher.firstname }} {{ teacher.lastname  }}</option>
+                        {%endfor%}
+                  </select>
+                  <input type="number" class="form-control" min="1" name="hours" id="hours" placeholder="Hours Registered" style="margin-bottom: 5px;">
+                  <input type="date" class="form-control" name="startdate" id="startdate" label="Start Date" style="margin-bottomr: 5px;">
+                  Start Date
+                  <input type="date" class="form-control" name="enddate" id="enddate" label="End Date" style="margin-bottomr: 5px;">
+                  End Date
+              </div>
+              <div>
+                  <p></p>
+                  <button class="btn btn-primary" type="submit">Enroll Student</button>
+              </div>
+  </form>
+  </div>
+
+{% endblock %}
+
+{% block sidenav %}
+  <div id="class_list" style="padding-left: 10px; font-size: 16px;">
+      <h1 class="display-4">Students</h1>
+          {%for student in students%}
+              {{  student.lastname }}, {{  student.firstname  }}: {{ student.grade  }}<br>
+          {%endfor%}
+</div>
+
+{% endblock %}
