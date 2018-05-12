@@ -5,55 +5,28 @@
 {% endblock %}
 
 {% block main %}
-  <h1 class="display-2">Requirements</h1>
-  <h4 class="display-4">Select a class below to assign requirements.<br><br></h4>
+  <h1 class="display-2">Requirements<br><br></h1>
 
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-2">
-        <h3>Foreign Language</h3>
+    <div class="row" style="padding-left: 20px;">
+        <h4 class="display-4 ">Foreign Language<br></h4>
         {%for class in flclasses%}
-          <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
-            <br><br>
-        {%endfor%}
-      </div>
-      <div class="col-sm-2">
-        <h3>Humanities</h3>
-        {%for class in humclasses%}
-        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
-          <br><br>
-        {%endfor%}
-      </div>
-      <div class="col-sm-2">
-        <h3>Math</h3>
-        {%for class in mathclasses%}
-        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
-          <br><br>
-        {%endfor%}
-      </div>
-      <div class="col-sm-2">
-        <h3>Science</h3>
-        {%for class in sciclasses%}
-        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
-          <br><br>
-        {%endfor%}
-      </div>
-      <div class="col-sm-2">
-        <h3>Social Science</h3>
-        {%for class in ssclasses%}
-        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
-          <br><br>
-        {%endfor%}
-      </div>
-      <div class="col-sm-2">
-        <h3>Technology</h3>
-        {%for class in techclasses%}
-        <button type="button" class="btn btn-light"><h4>{{  class.class_title }}<h4></button>
-          <br><br>
-        {%endfor%}
-      </div>
+            <div class="col-sm-3"></div>
+
+
+
+
+
+        <div class="col-sm-3"></div>
+            {%for class in flclasses%}
+                {{  class.class_title }}')">{{  class.class_title }}</button><br>
+            {%endfor%}
+        <div class="col-sm-9"></div>
     </div>
   </div>
+
+
+
 
 
 
@@ -62,31 +35,30 @@
 
 {% block sidenav %}
   <div id="class_list" style="padding-left: 10px; font-size: 16px;">
-      <h1 class="display-4">Classes</h1>
-
-      <b>Foreign Language</b><br>
+    <h4 class="display-4">Classes</h4>
+      <b>Foreign Language</b>
           {%for class in flclasses%}
-              {{  class.class_title }}<br>
+              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
           {%endfor%}
       <b>Humanities</b><br>
           {%for class in humclasses%}
-              {{  class.class_title }}<br>
+              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
           {%endfor%}
       <b>Math</b><br>
           {%for class in mathclasses%}
-              {{  class.class_title }}<br>
+              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
           {%endfor%}
       <b>Science</b><br>
           {%for class in sciclasses%}
-              {{  class.class_title }}<br>
+              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
           {%endfor%}
       <b>Social Science</b><br>
           {%for class in ssclasses%}
-              {{  class.class_title }}<br>
+              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
           {%endfor%}
       <b>Technology</b><br>
           {%for class in techclasses%}
-              {{  class.class_title }}<br>
+              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
           {%endfor%}
 </div>
 
