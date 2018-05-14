@@ -21,4 +21,5 @@ function passcheck() {
 function class_scroll(content) {
     var elmnt = document.getElementById(content);
     elmnt.scrollIntoView();
+    window.scrollBy(0, -100);
 }

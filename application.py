@@ -159,8 +159,8 @@ def addclass():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
 
-        get_db().execute("INSERT INTO class (class_title, department, credits, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
-                   (request.form.get("classtitle"), request.form.get("department"), request.form.get("credit"), datetime, datetime,))
+        get_db().execute("INSERT INTO class (class_title, department, credits, created_at, updated_at, req_count) VALUES (?, ?, ?, ?, ?, ?)",
+                   (request.form.get("classtitle"), request.form.get("department"), request.form.get("credit"), datetime, datetime, 0,))
         get_db().commit()
 
         return redirect("/addclass")
@@ -183,7 +183,7 @@ def deleteclass():
                    (request.form.get("classtitle"),))
         get_db().commit()
 
-        return apology("Delete class in progress...")
+        return redirect("/deleteclass")
     else:
         # get classes for the side list
         flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
@@ -198,7 +198,6 @@ def deleteclass():
 
         return render_template("deleteclass.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
-
 @app.route("/enrollstudent", methods=["GET", "POST"])
 def enrollstudent():
     if request.method == "POST":
@@ -208,7 +207,7 @@ def enrollstudent():
                     (request.form.get("lastname"), request.form.get("firstname"), request.form.get("grade"), request.form.get("enrolldate"), datetime, datetime,))
         get_db().commit()
 
-        return apology("Enroll Student in progress...")
+        return redirect("/enrollstudent")
     else:
         students = get_db().execute("SELECT lastname, firstname, grade FROM student ORDER BY lastname ASC")
 
@@ -219,38 +218,55 @@ def assignclass():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
 
-        get_db().execute("INSERT INTO studentClass (student_id, class_id, teacher_id, hours_purchased, start_date, end_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    (request.form.get("studentname"), request.form.get("class"), request.form.get("teacher"), request.form.get("hours"), request.form.get("startdate"), request.form.get("enddate"), datetime, datetime,))
+        get_db().execute("INSERT INTO studentClass (student_id, class_id, teacher_id, hours_purchased, start_date, end_date, created_at, updated_at, req_completion_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (request.form.get("studentname"), request.form.get("class"), request.form.get("teacher"), request.form.get("hours"), request.form.get("startdate"), request.form.get("enddate"), datetime, datetime, 0,))
         get_db().commit()
 
-        return apology("Assign Students in progress...")
+        return redirect("/assignclass")
     else:
-        students = get_db().execute("SELECT id, lastname, firstname, grade FROM student ORDER BY lastname ASC").fetchall()
+        students = get_db().execute("SELECT id, lastname, firstname, grade from student ORDER BY lastname ASC").fetchall()
+        stclasses = get_db().execute("SELECT class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id FROM class  INNER JOIN studentClass ON class_id=class.id ORDER BY class_title ASC").fetchall()
         classes = get_db().execute("SELECT id, class_title FROM class ORDER BY class_title ASC").fetchall()
-
         teachers = get_db().execute("SELECT user_id, firstname, lastname, user.id FROM teacher INNER JOIN user ON user.id=teacher.user_id").fetchall()
-        return render_template("assignclass.html", students=students, classes=classes, teachers=teachers)
+        return render_template("assignclass.html", students=students, classes=classes, teachers=teachers, stclasses=stclasses)
 
 @app.route("/requirements", methods=["GET", "POST"])
 def requirements():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
 
-        #get_db().execute("INSERT INTO student (lastname, firstname, grade, enrollment_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
-                    #(request.form.get("lastname"), request.form.get("firstname"), request.form.get("grade"), request.form.get("enrolldate"), datetime, datetime,))
-        #get_db().commit()
+        # get the id of the class selected
+        class_id = get_db().execute("SELECT id FROM class WHERE class_title = ?", (request.form.get("class_title"),)).fetchall()
 
-        return apology("Requirements in progress...")
+        # update req_count
+        req_grab = get_db().execute("SELECT req_count FROM class WHERE class_title = ?", (request.form.get("class_title"),)).fetchall()
+
+        if req_grab[0][0] is None:
+            req_count = 1
+        else:
+            req_count = req_grab[0][0] + 1
+
+        get_db().execute("UPDATE class SET req_count = ? WHERE class_title = ?", (req_count, request.form.get("class_title"),))
+        get_db().commit()
+
+        # enter the new requirements into the min_req table
+        get_db().execute("INSERT INTO min_req (class_id, req_title, req_description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+                    (class_id[0][0], request.form.get("new_req_title"), request.form.get("new_req_body"), datetime, datetime,))
+        get_db().commit()
+
+        return redirect("/requirements")
     else:
         # get classes for the side list
-        flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
+        flclasses = get_db().execute("SELECT class_title, id FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
         humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("humanities",)).fetchall()
         mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("math",)).fetchall()
         sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("science",)).fetchall()
         ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("socialstudies",)).fetchall()
         techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("technology",)).fetchall()
 
-
         classes = get_db().execute("SELECT class_title FROM class").fetchall()
 
-        return render_template("requirements.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
+        # get min reqs to populate req lists in new_req_body
+        min_req = get_db().execute("SELECT class_id, req_title, req_description FROM min_req ORDER BY req_title ASC").fetchall()
+
+        return render_template("requirements.html", min_req=min_req, classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)

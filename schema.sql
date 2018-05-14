@@ -27,6 +27,7 @@ create table studentClass (
     student_id integer not null,
     class_id integer not null,
     teacher_id integer not null,
+    req_completion_count integer,
     hours_purchased integer,
     start_date date,
     end_date date,
@@ -55,6 +56,7 @@ create table class (
     id integer primary key autoincrement,
     class_title text not null,
     credits number,
+    req_count integer,
     department text,
     created_at datetime,
     updated_at datetime
@@ -64,7 +66,8 @@ drop table if exists min_req;
 create table min_req (
     id integer primary key autoincrement,
     class_id integer not null,
-    requirement text not null,
+    req_title text not null,
+    req_description text not null,
     created_at datetime,
     updated_at datetime
 );
@@ -74,6 +77,7 @@ create table assignment (
     id integer primary key autoincrement,
     min_req_id integer not null,
     assinment_name text not null,
+    completion integer not null,
     created_at datetime,
     updated_at datetime
 );

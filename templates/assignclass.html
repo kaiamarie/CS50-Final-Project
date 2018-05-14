@@ -48,9 +48,16 @@
 {% block sidenav %}
   <div id="class_list" style="padding-left: 10px; font-size: 16px;">
       <h1 class="display-4">Students</h1>
-          {%for student in students%}
-              {{  student.lastname }}, {{  student.firstname  }}: {{ student.grade  }}<br>
-          {%endfor%}
+          {% for student in students %}
+              <b>{{  student.lastname }}, {{  student.firstname  }}</b><br>
+              <sup>Grade: {{ student.grade  }}</sup><br>
+              {% for class in stclasses %}
+                {% if student.id == class.student_id %}
+                  {{  class.class_title  }}<br>
+                {% endif %}
+              {% endfor %}
+              <br>
+          {% endfor %}
 </div>
 
 {% endblock %}

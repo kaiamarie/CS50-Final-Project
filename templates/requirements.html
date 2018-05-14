@@ -5,61 +5,299 @@
 {% endblock %}
 
 {% block main %}
-  <h1 class="display-2">Requirements<br><br></h1>
+  <h1 class="display-2">Requirements</h1><br>
+  <h1 class="display-4">Minimum objectives for students <br> to accomplish before they complete the course</h1><br>
 
   <div class="container-fluid">
     <div class="row" style="padding-left: 20px;">
-        <h4 class="display-4 ">Foreign Language<br></h4>
-        {%for class in flclasses%}
-            <div class="col-sm-3"></div>
 
-
-
-
-
-        <div class="col-sm-3"></div>
+      <div class="col-sm-2">
+        <h3>Foreign Language</h3><br>
             {%for class in flclasses%}
-                {{  class.class_title }}')">{{  class.class_title }}</button><br>
+                <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
             {%endfor%}
-        <div class="col-sm-9"></div>
+      </div>
+        <div class="col-sm-2">
+          <h3>Humanities</h3><br>
+              {%for class in humclasses%}
+                  <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
+              {%endfor%}
+        </div>
+      <div class="col-sm-2">
+        <h3>Math</h3><br>
+            {%for class in mathclasses%}
+                <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
+            {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Science</h3><br>
+            {%for class in sciclasses%}
+                <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
+            {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Social Science</h3><br>
+            {%for class in ssclasses%}
+                <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
+            {%endfor%}
+      </div>
+      <div class="col-sm-2">
+        <h3>Technology</h3><br>
+            {%for class in techclasses%}
+                <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
+            {%endfor%}
+      </div>
+  </div>
+</div>
+
+
+  <div class="container-fluid">
+    <div class="row" style="padding-left: 20px;">
+        <h4 class="display-4" style="margin-top: 100px;">Foreign Language<br></h4>
     </div>
   </div>
 
+  {% for class in flclasses %}
+    <div class="container-fluid">
+      <div class="row" style="padding-left: 20px;">
+        <div class="col-sm-3">
+          <h3 style="text-align: left;" id="{{  class.class_title }}">{{  class.class_title }}</h3>
 
+          {% for req in min_req %}
+              {% if class.id == req.class_id %}
+                  <div class="container-fluid">
+                    <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
+                    <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                  </div>
+              {% endif %}
+          {% endfor %}
+        </div>
 
+        <div class="col-sm-9">
+          <form action="/requirements" method="post">
+            <div class="form-group">
+              <textarea class="form-control" name="new_req_title" id="new_req_title_{{  class.class_title  }}" rows="1" style="margin-bottom: 5px;" placeholder="New {{  class.class_title  }} Requirement Title"></textarea>
+              <textarea class="form-control" name="new_req_body" id="new_req_body_{{  class.class_title  }}" rows="3" placeholder="New Requirement Explanation..."></textarea>
+              <input class="form-control d-none" name="class_title" id="class_title" value="{{  class.class_title  }}"></input>
+            </div>
+            <button class="btn btn-primary float-left" type="submit" style="margin-bottom: 10px; border-color: #2BBBAD; background-color: #2BBBAD;">Add Requirment</button>
+          </form>
+        </div>
 
+      </div>
+    </div>
+  {% endfor %}
 
+    <div class="container-fluid">
+      <div class="row" style="padding-left: 20px;">
+          <h4 class="display-4" style="margin-top: 100px;">Humanities<br></h4>
+      </div>
+    </div>
+    {% for class in humclasses %}
+    <div class="container-fluid">
+      <div class="row" style="padding-left: 20px;">
+          <div class="col-sm-3">
+            <h3 style="text-align: left;" id="{{  class.class_title }}">{{  class.class_title }}</h3>
+
+            {% for req in min_req %}
+                {% if class.id == req.class_id %}
+                    <div class="container-fluid">
+                      <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
+                      <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+          </div>
+
+          <div class="col-sm-9">
+            <form action="/requirements" method="post">
+                <div class="form-group">
+                  <textarea class="form-control" name="new_req_title" id="new_req_title_{{  class.class_title  }}" rows="1" style="margin-bottom: 5px;" placeholder="New {{  class.class_title  }} Requirement Title"></textarea>
+                  <textarea class="form-control" name="new_req_body" id="new_req_body_{{  class.class_title  }}" rows="3" placeholder="New Requirement Explanation..."></textarea>
+                  <input class="form-control d-none" name="class_title" id="class_title" value="{{  class.class_title  }}"></input>
+                </div>
+                <button class="btn btn-primary float-left" type="submit" style="margin-bottom: 10px; border-color: #2BBBAD; background-color: #2BBBAD;">Add Requirment</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+
+    <div class="container-fluid">
+      <div class="row" style="padding-left: 20px;">
+          <h4 class="display-4" style="margin-top: 100px;">Math<br></h4>
+      </div>
+    </div>
+    {% for class in mathclasses %}
+    <div class="container-fluid">
+      <div class="row" style="padding-left: 20px;">
+          <div class="col-sm-3">
+            <h3 style="text-align: left;" id="{{  class.class_title }}">{{  class.class_title }}</h3>
+
+            {% for req in min_req %}
+                {% if class.id == req.class_id %}
+                    <div class="container-fluid">
+                      <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
+                      <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+          </div>
+
+          <div class="col-sm-9">
+            <form action="/requirements" method="post">
+                <div class="form-group">
+                  <textarea class="form-control" name="new_req_title" id="new_req_title_{{  class.class_title  }}" rows="1" style="margin-bottom: 5px;" placeholder="New {{  class.class_title  }} Requirement Title"></textarea>
+                  <textarea class="form-control" name="new_req_body" id="new_req_body_{{  class.class_title  }}" rows="3" placeholder="New Requirement Explanation..."></textarea>
+                  <input class="form-control d-none" name="class_title" id="class_title" value="{{  class.class_title  }}"></input>
+                </div>
+                <button class="btn btn-primary float-left" type="submit" style="margin-bottom: 10px; border-color: #2BBBAD; background-color: #2BBBAD;">Add Requirment</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+
+        <div class="container-fluid">
+          <div class="row" style="padding-left: 20px;">
+              <h4 class="display-4" style="margin-top: 100px;">Science<br></h4>
+          </div>
+        </div>
+        {% for class in sciclasses %}
+        <div class="container-fluid">
+          <div class="row" style="padding-left: 20px;">
+              <div class="col-sm-3">
+                <h3 style="text-align: left;" id="{{  class.class_title }}">{{  class.class_title }}</h3>
+
+                {% for req in min_req %}
+                    {% if class.id == req.class_id %}
+                        <div class="container-fluid">
+                          <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
+                          <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+              </div>
+
+              <div class="col-sm-9">
+                <form action="/requirements" method="post">
+                    <div class="form-group">
+                      <textarea class="form-control" name="new_req_title" id="new_req_title_{{  class.class_title  }}" rows="1" style="margin-bottom: 5px;" placeholder="New {{  class.class_title  }} Requirement Title"></textarea>
+                      <textarea class="form-control" name="new_req_body" id="new_req_body_{{  class.class_title  }}" rows="3" placeholder="New Requirement Explanation..."></textarea>
+                      <input class="form-control d-none" name="class_title" id="class_title" value="{{  class.class_title  }}"></input>
+                    </div>
+                    <button class="btn btn-primary float-left" type="submit" style="margin-bottom: 10px; border-color: #2BBBAD; background-color: #2BBBAD;">Add Requirment</button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="container-fluid">
+            <div class="row" style="padding-left: 20px;">
+                <h4 class="display-4" style="margin-top: 100px;">Social Science<br></h4>
+            </div>
+          </div>
+          {% for class in ssclasses %}
+          <div class="container-fluid">
+            <div class="row" style="padding-left: 20px;">
+                <div class="col-sm-3">
+                  <h3 style="text-align: left;" id="{{  class.class_title }}">{{  class.class_title }}</h3>
+
+                  {% for req in min_req %}
+                      {% if class.id == req.class_id %}
+                          <div class="container-fluid">
+                            <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
+                            <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                          </div>
+                      {% endif %}
+                  {% endfor %}
+                </div>
+
+                <div class="col-sm-9">
+                  <form action="/requirements" method="post">
+                      <div class="form-group">
+                        <textarea class="form-control" name="new_req_title" id="new_req_title_{{  class.class_title  }}" rows="1" style="margin-bottom: 5px;" placeholder="New {{  class.class_title  }} Requirement Title"></textarea>
+                        <textarea class="form-control" name="new_req_body" id="new_req_body_{{  class.class_title  }}" rows="3" placeholder="New Requirement Explanation..."></textarea>
+                        <input class="form-control d-none" name="class_title" id="class_title" value="{{  class.class_title  }}"></input>
+                      </div>
+                      <button class="btn btn-primary float-left" type="submit" style="margin-bottom: 10px; border-color: #2BBBAD; background-color: #2BBBAD;">Add Requirment</button>
+                  </form>
+                </div>
+
+              </div>
+            </div>
+            {% endfor %}
+
+            <div class="container-fluid">
+              <div class="row" style="padding-left: 20px;">
+                  <h4 class="display-4" style="margin-top: 100px;">Technology<br></h4>
+              </div>
+            </div>
+            {% for class in techclasses %}
+            <div class="container-fluid">
+              <div class="row" style="padding-left: 20px;">
+                  <div class="col-sm-3">
+                    <h3 style="text-align: left;" id="{{  class.class_title }}">{{  class.class_title }}</h3>
+
+                    {% for req in min_req %}
+                        {% if class.id == req.class_id %}
+                            <div class="container-fluid">
+                              <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
+                              <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                  </div>
+
+                  <div class="col-sm-9">
+                    <form action="/requirements" method="post">
+                        <div class="form-group">
+                          <textarea class="form-control" name="new_req_title" id="new_req_title_{{  class.class_title  }}" rows="1" style="margin-bottom: 5px;" placeholder="New {{  class.class_title  }} Requirement Title"></textarea>
+                          <textarea class="form-control" name="new_req_body" id="new_req_body_{{  class.class_title  }}" rows="3" placeholder="New Requirement Explanation..."></textarea>
+                          <input class="form-control d-none" name="class_title" id="class_title" value="{{  class.class_title  }}"></input>
+                        </div>
+                        <button class="btn btn-primary float-left" type="submit" style="margin-bottom: 10px; border-color: #2BBBAD; background-color: #2BBBAD;">Add Requirment</button>
+                    </form>
+                  </div>
+
+                </div>
+              </div>
+              {% endfor %}
 
 
 {% endblock %}
 
 {% block sidenav %}
-  <div id="class_list" style="padding-left: 10px; font-size: 16px;">
-    <h4 class="display-4">Classes</h4>
-      <b>Foreign Language</b>
-          {%for class in flclasses%}
-              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
-          {%endfor%}
-      <b>Humanities</b><br>
-          {%for class in humclasses%}
-              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
-          {%endfor%}
-      <b>Math</b><br>
-          {%for class in mathclasses%}
-              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
-          {%endfor%}
-      <b>Science</b><br>
-          {%for class in sciclasses%}
-              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
-          {%endfor%}
-      <b>Social Science</b><br>
-          {%for class in ssclasses%}
-              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
-          {%endfor%}
-      <b>Technology</b><br>
-          {%for class in techclasses%}
-              <button type="button" class="btn btn-outline-secondary" style="margin-bottom: 5px;" onclick="class_scroll('{{  class.class_title }}')">{{  class.class_title }}</button><br>
-          {%endfor%}
-</div>
+<div id="class_list" style="padding-left: 10px; font-size: 16px;">
+    <h1 class="display-4">Classes</h1>
 
+    <b>Foreign Language</b><br>
+        {%for class in flclasses%}
+            {{  class.class_title }}<br>
+        {%endfor%}
+    <b>Humanities</b><br>
+        {%for class in humclasses%}
+            {{  class.class_title }}<br>
+        {%endfor%}
+    <b>Math</b><br>
+        {%for class in mathclasses%}
+            {{  class.class_title }}<br>
+        {%endfor%}
+    <b>Science</b><br>
+        {%for class in sciclasses%}
+            {{  class.class_title }}<br>
+        {%endfor%}
+    <b>Social Sciences</b><br>
+        {%for class in ssclasses%}
+            {{  class.class_title }}<br>
+        {%endfor%}
+    <b>Technology</b><br>
+        {%for class in techclasses%}
+            {{  class.class_title }}<br>
+        {%endfor%}
+</div>
 {% endblock %}
