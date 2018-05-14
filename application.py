@@ -77,7 +77,7 @@ def login():
         # session["user_type"] = "teacher"
         if not teacher_check is None:
             session["user_teacher"] = "true"
-            return render_template("teacher_home.html")
+            return redirect("/teacher_home")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -155,6 +155,7 @@ def logout():
     return redirect("/")
 
 @app.route("/addclass", methods=["GET", "POST"])
+@login_required
 def addclass():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
@@ -176,6 +177,7 @@ def addclass():
         return render_template("addclass.html", flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
 @app.route("/deleteclass", methods=["GET", "POST"])
+@login_required
 def deleteclass():
     if request.method == "POST":
 
@@ -199,6 +201,7 @@ def deleteclass():
         return render_template("deleteclass.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
 @app.route("/enrollstudent", methods=["GET", "POST"])
+@login_required
 def enrollstudent():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
@@ -214,6 +217,7 @@ def enrollstudent():
         return render_template("enrollstudent.html", students=students)
 
 @app.route("/assignclass", methods=["GET", "POST"])
+@login_required
 def assignclass():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
@@ -231,6 +235,7 @@ def assignclass():
         return render_template("assignclass.html", students=students, classes=classes, teachers=teachers, stclasses=stclasses)
 
 @app.route("/requirements", methods=["GET", "POST"])
+@login_required
 def requirements():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
@@ -258,11 +263,11 @@ def requirements():
     else:
         # get classes for the side list
         flclasses = get_db().execute("SELECT class_title, id FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
-        humclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("humanities",)).fetchall()
-        mathclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("math",)).fetchall()
-        sciclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("science",)).fetchall()
-        ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("socialstudies",)).fetchall()
-        techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("technology",)).fetchall()
+        humclasses = get_db().execute("SELECT class_title, id FROM class WHERE department = ?  ORDER BY class_title ASC", ("humanities",)).fetchall()
+        mathclasses = get_db().execute("SELECT class_title, id FROM class WHERE department = ?  ORDER BY class_title ASC", ("math",)).fetchall()
+        sciclasses = get_db().execute("SELECT class_title, id FROM class WHERE department = ?  ORDER BY class_title ASC", ("science",)).fetchall()
+        ssclasses = get_db().execute("SELECT class_title, id FROM class WHERE department = ?  ORDER BY class_title ASC", ("socialstudies",)).fetchall()
+        techclasses = get_db().execute("SELECT class_title, id FROM class WHERE department = ?  ORDER BY class_title ASC", ("technology",)).fetchall()
 
         classes = get_db().execute("SELECT class_title FROM class").fetchall()
 
@@ -270,3 +275,23 @@ def requirements():
         min_req = get_db().execute("SELECT class_id, req_title, req_description FROM min_req ORDER BY req_title ASC").fetchall()
 
         return render_template("requirements.html", min_req=min_req, classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
+
+@app.route("/teacher_home", methods=["GET", "POST"])
+@login_required
+def teacher_home():
+    if request.method == "POST":
+
+        return redirect("/teacher_home")
+    else:
+        # assign user id for signed in user
+        teacherId = session["user_id"]
+
+        # get list of student classes assigned to the teacher who is logged in
+        teacher_classes = get_db().execute("SELECT studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname, student.lastname, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
+
+        # get name of teacher for welcome page
+        teacher_info = get_db().execute("SELECT firstname, lastname FROM user WHERE id = ?", (teacherId,)).fetchall()
+
+
+
+        return render_template("teacher_home.html", teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)

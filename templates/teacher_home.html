@@ -6,84 +6,30 @@
 
 
 {% block sidenav %}
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#clients">Clients</a>
+  <h2 class="display-4">Classes</h2>
+
+  {% for class in teacher_classes %}
+    {% if class.teacher_id == teacherId %}
+      <div class="container-fluid">
+        <b>{{  class.class_title  }}</b><br>
+        <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+        <sup>Grade: {{ class.grade  }}</sup><br>
+        <br>
+      </div>
+      {% endif %}
+  {% endfor %}
+
 {% endblock %}
+
 
 {% block main %}
 
-  <h1>Scroll Test</h1>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <h1>Scroll Test</h1>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <h1>Scroll Test</h1>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <h1>Scroll Test</h1>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <h1>Scroll Test</h1>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <h1>Scroll Test</h1>
+    {% for teacher in teacher_info %}
+    <h1 class="display-2">Welcome, {{  teacher.firstname  }}!</h1>
+    {% endfor %}
+
+    <div class="progress">
+      <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
 
 {% endblock %}
