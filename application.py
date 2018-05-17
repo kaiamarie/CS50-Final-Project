@@ -35,7 +35,7 @@ def initdb_command():
 @login_required
 def index():
     if session["user_adviser"] == "true":
-        return redirect("/adviser_home")
+        return render_template("adviser_home.html")
 
     else:
         return redirect("/teacher_home")
@@ -45,9 +45,6 @@ def login():
 
     # Forget any user_id
     session.clear()
-
-    session["user_adviser"] = 'false'
-    session["user_teacher"] = 'false'
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -66,7 +63,7 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows["id"]
-        print(session["user_id"])
+
 
         # run a check for adviser
         adviser_check = get_db().execute("SELECT * FROM adviser WHERE user_id = ?",
@@ -75,7 +72,7 @@ def login():
         # set session user type to adviser in order to show the adviser side of the site only
         if not adviser_check is None:
             session["user_adviser"] = "true"
-            return render_template("adviser_home.html")
+            return redirect('/')
 
         # run a check for teacher
         teacher_check = get_db().execute("SELECT * FROM teacher WHERE user_id = ?",
