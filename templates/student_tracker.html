@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Student Class
+{% endblock %}
+
+
+{% block sidenav %}
+
+
+{% endblock %}
+
+
+{% block main %}
+
+    Student: {{  student_id  }}
+    Class: {{  class_id  }}
+
+    <form action="/student_tracker" method="post">
+      <input type="text" class="form-control hidden" name="student_id" value="{{ student_id }}">
+      <input type="text" class="form-control hidden" name="class_id" value="{{ class_id }}">
+      <button class="btn btn-link" type="submit">
+        Test Button
+      </button>
+
+
+{% endblock %}

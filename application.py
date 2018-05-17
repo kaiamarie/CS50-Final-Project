@@ -34,13 +34,20 @@ def initdb_command():
 @app.route("/")
 @login_required
 def index():
-    return render_template("adviser_home.html")
+    if session["user_adviser"] == "true":
+        return redirect("/adviser_home")
+
+    else:
+        return redirect("/teacher_home")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
     # Forget any user_id
     session.clear()
+
+    session["user_adviser"] = 'false'
+    session["user_teacher"] = 'false'
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -281,13 +288,17 @@ def requirements():
 def teacher_home():
     if request.method == "POST":
 
-        return redirect("/teacher_home")
+        student_id = request.form.get("student_id")
+        class_id = request.form.get("class_id")
+
+        return render_template("student_tracker.html", student_id = student_id, class_id = class_id)
+
     else:
         # assign user id for signed in user
         teacherId = session["user_id"]
 
         # get list of student classes assigned to the teacher who is logged in
-        teacher_classes = get_db().execute("SELECT studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname, student.lastname, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
+        teacher_classes = get_db().execute("SELECT studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname, student.lastname, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
 
         # get name of teacher for welcome page
         teacher_info = get_db().execute("SELECT firstname, lastname FROM user WHERE id = ?", (teacherId,)).fetchall()
@@ -295,3 +306,20 @@ def teacher_home():
 
 
         return render_template("teacher_home.html", teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
+
+@app.route("/student_tracker", methods=["GET", "POST"])
+@login_required
+def student_tracker():
+    if request.method == "POST":
+
+        student_id = request.form.get("student_id")
+        class_id = request.form.get("class_id")
+
+        print(student_id)
+        print(class_id)
+
+        return render_template("student_tracker.html", student_id = student_id, class_id = class_id)
+
+    else:
+
+        return render_template("student_tracker", student_id = student_id, class_id = class_id)

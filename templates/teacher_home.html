@@ -10,12 +10,17 @@
 
   {% for class in teacher_classes %}
     {% if class.teacher_id == teacherId %}
-      <div class="container-fluid">
-        <b>{{  class.class_title  }}</b><br>
-        <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
-        <sup>Grade: {{ class.grade  }}</sup><br>
-        <br>
-      </div>
+      <form action="/teacher_home" method="post">
+        <input type="text" class="form-control hidden" name="student_id" value="{{ class.student_id }}">
+        <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}">
+        <button class="btn btn-link" type="submit">
+          <div class="container-fluid">
+            <b>{{  class.class_title  }}</b><br>
+            <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+            <sup>Grade: {{ class.grade  }}</sup><br>
+            <br>
+          </div>
+        </button>
       {% endif %}
   {% endfor %}
 
@@ -27,6 +32,8 @@
     {% for teacher in teacher_info %}
     <h1 class="display-2">Welcome, {{  teacher.firstname  }}!</h1>
     {% endfor %}
+
+
 
     <div class="progress">
       <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
