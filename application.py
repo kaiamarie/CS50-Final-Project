@@ -34,6 +34,14 @@ def initdb_command():
 @app.route("/")
 @login_required
 def index():
+    user_id = get_db().execute("SELECT * FROM adviser WHERE user_id = ?", (session["user_id"],)).fetchall()
+
+    if not user_id is None:
+        session["user_adviser"] = "true"
+
+    else:
+        session["user_adviser"] = ''
+
     if session["user_adviser"] == "true":
         return render_template("adviser_home.html")
 
@@ -288,7 +296,7 @@ def teacher_home():
         student_id = request.form.get("student_id")
         class_id = request.form.get("class_id")
 
-        return render_template("student_tracker.html", student_id = student_id, class_id = class_id)
+        return redirect("/student_tracker", student_id, class_id)
 
     else:
         # assign user id for signed in user
@@ -300,13 +308,11 @@ def teacher_home():
         # get name of teacher for welcome page
         teacher_info = get_db().execute("SELECT firstname, lastname FROM user WHERE id = ?", (teacherId,)).fetchall()
 
-
-
         return render_template("teacher_home.html", teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
 
 @app.route("/student_tracker", methods=["GET", "POST"])
 @login_required
-def student_tracker():
+def student_tracker(student_id, class_id):
     if request.method == "POST":
 
         student_id = request.form.get("student_id")
