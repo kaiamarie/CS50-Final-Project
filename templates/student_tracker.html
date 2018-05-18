@@ -6,22 +6,49 @@
 
 
 {% block sidenav %}
+    <h2 class="display-4">Classes</h2>
 
+    {% for class in teacher_classes %}
+      {% if class.teacher_id == teacherId %}
+        <form action="/teacher_home" method="post">
+          <input type="text" class="form-control hidden" name="student_id" value="{{ class.student_id }}"></option>
+          <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}"></input>
+          <button class="btn btn-link" style="text-align: left;"  type="submit">
+            <div class="container-fluid">
+              <b>{{  class.class_title  }}</b><br>
+              <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+              <sup>Grade: {{ class.grade  }}</sup><br>
+              <br>
+            </div>
+          </button>
+        </form>
+      {% endif %}
+    {% endfor %}
 
 {% endblock %}
 
 
 {% block main %}
 
-    Student: {{  student_id  }}
-    Class: {{  class_id  }}
+    <div class="container-fluid">
+      {% for student in student_name %}
+        <h1 class="display-2" style="text-align: left;">{{  student.firstname  }} {{  student.lastname  }}</h1>
+      {% endfor %}
+      {% for class in class_title %}
+        <h1 class="display-4" style="text-align: left;">{{  class.class_title  }}</h1></br></br>
+      {% endfor %}
 
-    <form action="/student_tracker" method="post">
-      <input type="text" class="form-control hidden" name="student_id" value="{{ student_id }}">
-      <input type="text" class="form-control hidden" name="class_id" value="{{ class_id }}">
-      <button class="btn btn-link" type="submit">
-        Test Button
-      </button>
+        <div class="row">
+          <div class="col-sm-3" style="background-color: #e0e0e0; margin-left: 10px;">
+            <p style="font-size: 20px;">Minimum Requirements</p>
+            {% for req in min_req %}
+              <h3 style="text-align: left;">{{  req.req_title  }}</h3>
+              <p style="font-size: 16px; text-align: left;">{{  req.req_description  }}</p>
+            {% endfor %}
+          </div>
 
+
+        </div>
+    </div>
 
 {% endblock %}

@@ -35,7 +35,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbar">
             {% if session.user_id %}
-                {% if session.user_adviser %}
+                {% if session.user_adviser == 'true' %}
                     <ul class="navbar-nav mr-auto mt-2">
                         <li class="nav-item"><a class="nav-link" href="/enrollstudent">Enroll Student</a></li>
                         <li class="nav-item"><a class="nav-link" href="/assignclass">Assign Class</a></li>

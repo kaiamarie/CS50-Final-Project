@@ -10,18 +10,19 @@
 
   {% for class in teacher_classes %}
     {% if class.teacher_id == teacherId %}
-      <form action="/teacher_home" method="post">
-        <input type="text" class="form-control hidden" name="student_id" value="{{ class.student_id }}">
-        <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}">
-        <button class="btn btn-link" type="submit">
-          <div class="container-fluid">
-            <b>{{  class.class_title  }}</b><br>
-            <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
-            <sup>Grade: {{ class.grade  }}</sup><br>
-            <br>
-          </div>
-        </button>
-      {% endif %}
+        <form action="/teacher_home" method="post">
+          <input type="text" class="form-control hidden" name="student_id" value="{{ class.student_id }}"></option>
+          <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}"></input>
+          <button class="btn btn-link" style="text-align: left;" type="submit">
+            <div class="container-fluid">
+              <b>{{  class.class_title  }}</b><br>
+              <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+              <sup>Grade: {{ class.grade  }}</sup><br>
+              <br>
+            </div>
+          </button>
+        </form>
+    {% endif %}
   {% endfor %}
 
 {% endblock %}

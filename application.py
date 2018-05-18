@@ -34,18 +34,15 @@ def initdb_command():
 @app.route("/")
 @login_required
 def index():
-    user_id = get_db().execute("SELECT * FROM adviser WHERE user_id = ?", (session["user_id"],)).fetchall()
+    user_id = get_db().execute("SELECT user_id FROM adviser WHERE user_id = ?", (session["user_id"],)).fetchall()
 
-    if not user_id is None:
+    if len(user_id) != 0:
         session["user_adviser"] = "true"
-
-    else:
-        session["user_adviser"] = ''
-
-    if session["user_adviser"] == "true":
+        print("Click not working")
         return render_template("adviser_home.html")
 
     else:
+        session["user_adviser"] = "false"
         return redirect("/teacher_home")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -149,7 +146,7 @@ def register():
             get_db().commit()
             session["user_teacher"] = "true"
             print("teacher check")
-            return render_template("teacher_home.html")
+            return redirect("/teacher_home")
         else:
             return apology("Sorry, there was a problem registering you. Please try again.")
 
@@ -161,6 +158,7 @@ def logout():
     """Log user out"""
 
     # Forget any user_id
+    session["user_adviser"] = None
     session.clear()
 
     # Redirect user to login form
@@ -293,14 +291,18 @@ def requirements():
 def teacher_home():
     if request.method == "POST":
 
-        student_id = request.form.get("student_id")
-        class_id = request.form.get("class_id")
+        session["student_id"] = request.form.get("student_id")
+        print(session["student_id"])
+        session["class_id"] = request.form.get("class_id")
+        print(session["class_id"])
 
-        return redirect("/student_tracker", student_id, class_id)
+        return redirect("/student_tracker")
 
     else:
         # assign user id for signed in user
         teacherId = session["user_id"]
+
+        session["user_adviser"] = 'false'
 
         # get list of student classes assigned to the teacher who is logged in
         teacher_classes = get_db().execute("SELECT studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname, student.lastname, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
@@ -312,17 +314,26 @@ def teacher_home():
 
 @app.route("/student_tracker", methods=["GET", "POST"])
 @login_required
-def student_tracker(student_id, class_id):
+def student_tracker():
     if request.method == "POST":
 
-        student_id = request.form.get("student_id")
-        class_id = request.form.get("class_id")
+        session["student_id"] = request.form.get("student_id")
+        session["class_id"] = request.form.get("class_id")
 
-        print(student_id)
-        print(class_id)
-
-        return render_template("student_tracker.html", student_id = student_id, class_id = class_id)
+        return redirect("/student_tracker")
+        #return render_template("student_tracker.html", student_id = student_id, class_id = class_id)
 
     else:
+        student_id = session["student_id"]
+        class_id = session["class_id"]
 
-        return render_template("student_tracker", student_id = student_id, class_id = class_id)
+        student_name = get_db().execute("SELECT firstname, lastname FROM student WHERE id = ?", (student_id,)).fetchall()
+        class_title = get_db().execute("SELECT class_title FROM class WHERE id = ?", (class_id,)).fetchall()
+        min_req = get_db().execute("SELECT req_title, req_description FROM min_req WHERE class_id = ?", (class_id,)).fetchall()
+        # assign user id for signed in user
+        teacherId = session["user_id"]
+
+        # get list of student classes assigned to the teacher who is logged in
+        teacher_classes = get_db().execute("SELECT studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname, student.lastname, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
+
+        return render_template("student_tracker.html", min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
