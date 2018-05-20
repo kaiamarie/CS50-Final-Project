@@ -77,7 +77,17 @@ create table assignment (
     id integer primary key autoincrement,
     min_req_id integer not null,
     assinment_name text not null,
-    completion integer not null,
+    student_id integer not null,
+    completion text not null,
+    created_at datetime,
+    updated_at datetime
+);
+
+drop table if exists student_req;
+create table student_com_req (
+    id integer primary key autoincrement,
+    min_req_id integer not null,
+    student_id integer not null,
     created_at datetime,
     updated_at datetime
 );
