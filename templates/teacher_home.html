@@ -6,24 +6,25 @@
 
 
 {% block sidenav %}
-  <h2 class="display-4">Classes</h2>
+    <h2 class="display-4" style="font-size: 25px; margin-left: 5px;"> My Classes</h2>
 
-  {% for class in teacher_classes %}
-    {% if class.teacher_id == teacherId %}
+    {% for class in teacher_classes %}
+      {% if class.teacher_id == teacherId %}
         <form action="/teacher_home" method="post">
           <input type="text" class="form-control hidden" name="student_id" value="{{ class.student_id }}"></option>
           <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}"></input>
-          <button class="btn btn-link" style="text-align: left;" type="submit">
+          <button class="btn btn-link" style="text-align: left;"  type="submit">
             <div class="container-fluid">
-              <b>{{  class.class_title  }}</b><br>
-              <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+              <h2 class="display-2" style="font-size: 20px; color: #2BBBAD;">
+                <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+                {{  class.class_title  }}<br>
               <sup>Grade: {{ class.grade  }}</sup><br>
-              <br>
+            </h2>
             </div>
           </button>
         </form>
-    {% endif %}
-  {% endfor %}
+      {% endif %}
+    {% endfor %}
 
 {% endblock %}
 

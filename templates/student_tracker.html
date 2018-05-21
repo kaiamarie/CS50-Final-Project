@@ -6,7 +6,7 @@
 
 
 {% block sidenav %}
-    <h2 class="display-4">Classes</h2>
+    <h2 class="display-4" style="font-size: 25px; margin-left: 5px;"> My Classes</h2>
 
     {% for class in teacher_classes %}
       {% if class.teacher_id == teacherId %}
@@ -15,10 +15,11 @@
           <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}"></input>
           <button class="btn btn-link" style="text-align: left;"  type="submit">
             <div class="container-fluid">
-              <b>{{  class.class_title  }}</b><br>
-              <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+              <h2 class="display-2" style="font-size: 20px; color: #2BBBAD;">
+                <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+                {{  class.class_title  }}<br>
               <sup>Grade: {{ class.grade  }}</sup><br>
-              <br>
+            </h2>
             </div>
           </button>
         </form>
@@ -37,13 +38,40 @@
       {% for class in class_title %}
         <h1 class="display-4" style="text-align: left;">{{  class.class_title  }}</h1></br></br>
       {% endfor %}
-
         <div class="row">
           <div class="col-sm-3" style="background-color: #e0e0e0; margin-left: 10px;">
-            <p style="font-size: 20px;">Minimum Requirements</p>
+            <br><h1 class="display-4">Minimum Requirements</h1><br>
+
             {% for req in min_req %}
-              <h3 style="text-align: left;">{{  req.req_title  }}</h3>
-              <p style="font-size: 16px; text-align: left;">{{  req.req_description  }}</p>
+                <h2 class="display-4" style="font-size: 25px; text-align: left;">{{  req.req_title  }}</h2>
+                <p style="font-size: 16px; text-align: left;">{{  req.req_description  }}</p>
+
+                {% if com_req == [] %}
+                    <form action="/student_req" method="post">
+                      <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                      <button class="btn btn-secondary" type="submit">Mark as Complete</button><br><br>
+                    </form>
+                {% else %}
+
+
+                    {% for comreq in com_req %}
+                        {% if comreq.min_req_id == req.id %}
+
+                            <button class="btn btn-secondary disabled" style="border-color: #2BBBAD; background-color: #2BBBAD;" type="submit">Complete</button><br>
+                            <form action="/undo_req" method="post">
+                              <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                              <button class="btn btn-link" style="color: #000000;" type="submit">Mark as Incomplete</button><br><br>
+                            </form>
+                        {% endif %}
+                    {% endfor %}
+
+
+
+                {% endif %}
+
+
+
+
             {% endfor %}
           </div>
 

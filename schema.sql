@@ -83,7 +83,7 @@ create table assignment (
     updated_at datetime
 );
 
-drop table if exists student_req;
+drop table if exists student_com_req;
 create table student_com_req (
     id integer primary key autoincrement,
     min_req_id integer not null,

@@ -327,13 +327,44 @@ def student_tracker():
         student_id = session["student_id"]
         class_id = session["class_id"]
 
-        student_name = get_db().execute("SELECT firstname, lastname FROM student WHERE id = ?", (student_id,)).fetchall()
+        student_name = get_db().execute("SELECT id, firstname, lastname FROM student WHERE id = ?", (student_id,)).fetchall()
         class_title = get_db().execute("SELECT class_title FROM class WHERE id = ?", (class_id,)).fetchall()
-        min_req = get_db().execute("SELECT req_title, req_description FROM min_req WHERE class_id = ?", (class_id,)).fetchall()
+        min_req = get_db().execute("SELECT id, req_title, req_description FROM min_req WHERE class_id = ?", (class_id,)).fetchall()
+
         # assign user id for signed in user
         teacherId = session["user_id"]
 
         # get list of student classes assigned to the teacher who is logged in
         teacher_classes = get_db().execute("SELECT studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname, student.lastname, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
 
-        return render_template("student_tracker.html", min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
+        # get information about completed courses
+        com_req = get_db().execute("SELECT min_req_id FROM student_com_req WHERE student_id = ?", (student_id,)).fetchall()
+
+        for req in min_req:
+            for com in com_req:
+                if req["id"] == com["min_req_id"]:
+                    print(req["req_title"])
+
+
+        return render_template("student_tracker.html", com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
+
+@app.route("/student_req", methods=["POST"])
+@login_required
+def student_req():
+    datetime = time.asctime(time.localtime(time.time()))
+    min_req_id = request.form.get("req_id")
+    student_id = session["student_id"]
+    class_id = session["class_id"]
+
+    get_db().execute("INSERT INTO student_com_req (min_req_id, student_id, created_at, updated_at) VALUES (?, ?, ?, ?)", (min_req_id, student_id, datetime, datetime,))
+    get_db().commit()
+
+    # get old count of completed number to add to it
+    com_count = get_db().execute("SELECT req_completion_count FROM studentClass WHERE student_id = ? AND class_id = ?", (student_id, class_id,)).fetchall()
+    new_count = com_count[0][0] + 1
+
+    # adjust new count in studentClass
+    get_db().execute("UPDATE studentClass SET req_completion_count = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (new_count, datetime, student_id, class_id,))
+    get_db().commit()
+
+    return redirect("/student_tracker")
