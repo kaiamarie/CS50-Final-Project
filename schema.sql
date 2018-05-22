@@ -77,11 +77,12 @@ drop table if exists assignment;
 create table assignment (
     id integer primary key autoincrement,
     min_req_id integer not null,
-    assinment_name text not null,
+    assignment_name text not null,
+    assignment_info text,
     student_id integer not null,
-    completion text not null,
     created_at datetime,
-    updated_at datetime
+    updated_at datetime,
+    com_tmp integer
 );
 
 drop table if exists student_com_req;

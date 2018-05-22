@@ -15,7 +15,7 @@
           <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}"></input>
           <button class="btn btn-link" style="text-align: left;"  type="submit">
             <div class="container-fluid">
-              <h2 class="display-2" style="font-size: 20px; color: #2BBBAD;">
+              <h2 class="display-2" style="font-size: 20px; color: #000000;">
                 <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
                 {{  class.class_title  }}<br>
               <sup>Grade: {{ class.grade  }}</sup><br>
@@ -38,128 +38,97 @@
       {% for class in class_title %}
         <h1 class="display-4" style="text-align: left;">{{  class.class_title  }}</h1></br></br>
       {% endfor %}
+      <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; background-color: #2BBBAD" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+
     </div>
+
+
     <div class="container-fluid">
         <div class="row">
           <div class="col-sm-3" style="background-color: #e0e0e0;  margin-left: 10px;">
             <br><h1 class="display-4">Minimum Requirements</h1><br>
 
             {% for req in min_req %}
-                <h2 class="display-4" style="font-size: 25px; text-align: left;">{{  req.req_title  }}</h2>
-                <p style="font-size: 16px; text-align: left;">{{  req.req_description  }}</p>
-
+                <h2 class="display-4" style="font-size: 25px; text-align: left;">
 
                   {% if req.com_tmp == 1 %}
 
-                      <button class="btn btn-secondary disabled" style="border-color: #2BBBAD; background-color: #2BBBAD;" type="submit">Complete</button><br>
                       <form action="/undo_req" method="post">
                         <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
-                        <button class="btn btn-link" style="color: #000000;" type="submit">Mark as Incomplete</button><br><br>
+                        <button data-toggle="popover" title="Mark Requirement Incomplete" data-trigger="hover" class="btn float-left" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                          <span class="glyphicon glyphicon-ok"></span>
+                        </button>
                       </form>
 
                   {% else %}
 
                         <form action="/student_req" method="post">
                           <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
-                          <button class="btn btn-secondary" type="submit">Mark as Complete</button><br><br>
+                          <button data-toggle="popover" title="Mark Requirement Complete" data-trigger="hover" class="btn btn-danger button-sm float-left" style="margin-right: 5px;" type="submit">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </button>
                         </form>
 
                   {% endif %}
+
+              {{  req.req_title  }}</h2>
+              <p style="font-size: 16px; text-align: left;">{{  req.req_description  }}</p>
 
             {% endfor %}
           </div>
           <div class="col-sm-8" style="background-color: #e0e0e0; margin-right: 10px; margin-left: 20px;">
               <br><h1 class="display-4">Assignments</h1><br>
 
+              {% for req in min_req %}
+                <div class="col-sm-6" style="min-height: 150px;">
+                  <h2 class="display-4" style="font-size: 25px;">{{  req.req_title  }}</h2>
+                  <form action="/assignment_add" method="post">
+                    <input type="text" class="form-control" name="assignment_name" placeholder="New Assinment Title" required style="margin-bottom: 5px;">
+                    <textarea class="form-control" name="assignment_info" rows="3" placeholder="New Assignment Details..." style="margin-bottom: 5px;"></textarea>
+                    <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                    <button class="btn btn-sm btn-secondary" type="submit">Add New Assignment</button><br><br>
+                  </form>
 
-              <div class="container">
-    <h2>Activate Carousel with JavaScript</h2>
-    <div id="myCarousel" class="carousel slide">
-      <!-- Indicators -->
-      <ol class="carousel-indicators">
-        <li class="item1 active"></li>
-        <li class="item2"></li>
-        <li class="item3"></li>
-        <li class="item4"></li>
-      </ol>
+                  {% for assignment in assignment %}
+                    {% if assignment.min_req_id == req.id %}
+                          <h2 class="display-4" style="margin-top: 10px; font-size: 18px; text-align: left;">
+                            {% if assignment.com_tmp == 1 %}
+                                <form action="/undo_assignment" method="post">
+                                  <input value="{{  assignment.id  }}" class="hidden" name="assignment_id"></input>
+                                  <button data-toggle="popover" title="Mark Assignment Incomplete" data-trigger="hover" class="btn float-left d-inline" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                  </button>
+                                </form>
+                            {% else %}
+                                <form action="/com_assignment" method="post">
+                                  <input value="{{  assignment.id  }}" class="hidden" name="assignment_id"></input>
+                                  <button data-toggle="popover" title="Mark Assignment Complete" data-trigger="hover" class="btn btn-danger button-sm float-left d-inline" style="margin-right: 5px;" type="submit">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                  </button>
+                                </form>
+                            {% endif %}
 
-      <!-- Wrapper for slides -->
-      <div class="carousel-inner" role="listbox">
 
-        <div class="item active">
-          <img src="img_chania.jpg" alt="Chania" width="460" height="345">
-          <div class="carousel-caption">
-            <h3>Chania</h3>
-            <p>The atmosphere in Chania has a touch of Florence and Venice.</p>
-          </div>
-        </div>
+                          {{  assignment.assignment_name  }}</h2>
 
-        <div class="item">
-          <img src="img_chania2.jpg" alt="Chania" width="460" height="345">
-          <div class="carousel-caption">
-            <h3>Chania</h3>
-            <p>The atmosphere in Chania has a touch of Florence and Venice.</p>
-          </div>
-        </div>
+                          <p style="font-size: 12px; text-align: left;">{{  assignment.assignment_info  }}</p>
 
-        <div class="item">
-          <img src="img_flower.jpg" alt="Flower" width="460" height="345">
-          <div class="carousel-caption">
-            <h3>Flowers</h3>
-            <p>Beautiful flowers in Kolymbari, Crete.</p>
-          </div>
-        </div>
+                    {% endif %}
+                  {% endfor %}
 
-        <div class="item">
-          <img src="img_flower2.jpg" alt="Flower" width="460" height="345">
-          <div class="carousel-caption">
-            <h3>Flowers</h3>
-            <p>Beautiful flowers in Kolymbari, Crete.</p>
-          </div>
-        </div>
 
-      </div>
 
-      <!-- Left and right controls -->
-      <a class="left carousel-control" href="#myCarousel" role="button">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-      </a>
-      <a class="right carousel-control" href="#myCarousel" role="button">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-      </a>
-    </div>
-  </div>
 
-  <script>
-  $(document).ready(function(){
-      // Activate Carousel
-      $("#myCarousel").carousel();
+                </div>
+              {% endfor %}
 
-      // Enable Carousel Indicators
-      $(".item1").click(function(){
-          $("#myCarousel").carousel(0);
-      });
-      $(".item2").click(function(){
-          $("#myCarousel").carousel(1);
-      });
-      $(".item3").click(function(){
-          $("#myCarousel").carousel(2);
-      });
-      $(".item4").click(function(){
-          $("#myCarousel").carousel(3);
-      });
 
-      // Enable Carousel Controls
-      $(".left").click(function(){
-          $("#myCarousel").carousel("prev");
-      });
-      $(".right").click(function(){
-          $("#myCarousel").carousel("next");
-      });
-  });
-  </script>
+
+
+
+
 
 
 

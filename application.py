@@ -344,6 +344,18 @@ def student_tracker():
         # get information about completed courses
         com_req = get_db().execute("SELECT min_req_id FROM student_com_req WHERE student_id = ?", (student_id,)).fetchall()
 
+        # get assignments
+        assignment = get_db().execute("SELECT id, assignment_name, assignment_info, com_tmp, min_req_id FROM assignment WHERE student_id = ?", (student_id,)).fetchall()
+
+        # get progress percentage
+        student_com_grab = get_db().execute("SELECT req_completion_count FROM studentClass WHERE student_id = ? AND class_id = ?", (student_id, class_id,)).fetchall()
+        student_com = student_com_grab[0][0]
+
+        class_req_grab = get_db().execute("SELECT req_count FROM class WHERE id = ?", (class_id,)).fetchall()
+        class_req = class_req_grab[0][0]
+
+        progress = (student_com / class_req) * 100
+
         for req in min_req:
             for com in com_req:
                 if req["id"] == com["min_req_id"]:
@@ -352,7 +364,7 @@ def student_tracker():
 
         min_req = get_db().execute("SELECT id, req_title, req_description, com_tmp FROM min_req WHERE class_id = ?", (class_id,)).fetchall()
 
-        return render_template("student_tracker.html", com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
+        return render_template("student_tracker.html", progress = progress, assignment = assignment, com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
 
 @app.route("/student_req", methods=["POST"])
 @login_required
@@ -392,6 +404,43 @@ def undo_req():
 
     # adjust new count in studentClass
     get_db().execute("UPDATE studentClass SET req_completion_count = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (new_count, datetime, student_id, class_id,))
+    get_db().commit()
+
+    return redirect("/student_tracker")
+
+@app.route("/assignment_add", methods=["POST"])
+@login_required
+def assignment_add():
+    datetime = time.asctime(time.localtime(time.time()))
+    min_req_id = request.form.get("req_id")
+    assignment_name = request.form.get("assignment_name")
+    assignment_info = request.form.get("assignment_info")
+    student_id = session["student_id"]
+    class_id = session["class_id"]
+
+    get_db().execute("INSERT INTO assignment (min_req_id, assignment_name, assignment_info, student_id, created_at, updated_at, com_tmp) VALUES (?, ?, ?, ?, ?, ?, ?)", (min_req_id, assignment_name, assignment_info, student_id, datetime, datetime, "0",))
+    get_db().commit()
+
+    return redirect("/student_tracker")
+
+@app.route("/com_assignment", methods=["POST"])
+@login_required
+def com_assignment():
+    datetime = time.asctime(time.localtime(time.time()))
+    assignment_id = request.form.get("assignment_id")
+
+    get_db().execute("UPDATE assignment SET com_tmp = ?, updated_at = ? WHERE id =?", (1, datetime, assignment_id,))
+    get_db().commit()
+
+    return redirect("/student_tracker")
+
+@app.route("/undo_assignment", methods=["POST"])
+@login_required
+def undo_assignment():
+    datetime = time.asctime(time.localtime(time.time()))
+    assignment_id = request.form.get("assignment_id")
+
+    get_db().execute("UPDATE assignment SET com_tmp = ?, updated_at = ? WHERE id =?", (0, datetime, assignment_id,))
     get_db().commit()
 
     return redirect("/student_tracker")
