@@ -343,7 +343,9 @@ def student_tracker():
         for req in min_req:
             for com in com_req:
                 if req["id"] == com["min_req_id"]:
-                    print(req["req_title"])
+                    title = req["req_title"]
+                    session["req_title"] = title
+                    
 
 
         return render_template("student_tracker.html", com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)

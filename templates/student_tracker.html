@@ -54,16 +54,23 @@
                 {% else %}
 
 
-                    {% for comreq in com_req %}
-                        {% if comreq.min_req_id == req.id %}
+
+                        {% if session["req_title"] == req.req_title %}
 
                             <button class="btn btn-secondary disabled" style="border-color: #2BBBAD; background-color: #2BBBAD;" type="submit">Complete</button><br>
                             <form action="/undo_req" method="post">
                               <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
                               <button class="btn btn-link" style="color: #000000;" type="submit">Mark as Incomplete</button><br><br>
                             </form>
+
+                        {% else %}
+
+                              <form action="/student_req" method="post">
+                                <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                                <button class="btn btn-secondary" type="submit">Mark as Complete</button><br><br>
+                              </form>
                         {% endif %}
-                    {% endfor %}
+
 
 
 
