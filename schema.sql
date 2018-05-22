@@ -69,7 +69,8 @@ create table min_req (
     req_title text not null,
     req_description text not null,
     created_at datetime,
-    updated_at datetime
+    updated_at datetime,
+    com_tmp integer
 );
 
 drop table if exists assignment;

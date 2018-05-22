@@ -326,6 +326,10 @@ def student_tracker():
     else:
         student_id = session["student_id"]
         class_id = session["class_id"]
+        datetime = time.asctime(time.localtime(time.time()))
+
+        get_db().execute("UPDATE min_req SET com_tmp = ?, updated_at = ?", ("0", datetime,))
+        get_db().commit()
 
         student_name = get_db().execute("SELECT id, firstname, lastname FROM student WHERE id = ?", (student_id,)).fetchall()
         class_title = get_db().execute("SELECT class_title FROM class WHERE id = ?", (class_id,)).fetchall()
@@ -343,10 +347,10 @@ def student_tracker():
         for req in min_req:
             for com in com_req:
                 if req["id"] == com["min_req_id"]:
-                    title = req["req_title"]
-                    session["req_title"] = title
-                    
+                    get_db().execute("UPDATE min_req SET com_tmp = ?, updated_at = ? WHERE id = ?", ("1", datetime, req["id"],))
+                    get_db().commit()
 
+        min_req = get_db().execute("SELECT id, req_title, req_description, com_tmp FROM min_req WHERE class_id = ?", (class_id,)).fetchall()
 
         return render_template("student_tracker.html", com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
 
@@ -364,6 +368,27 @@ def student_req():
     # get old count of completed number to add to it
     com_count = get_db().execute("SELECT req_completion_count FROM studentClass WHERE student_id = ? AND class_id = ?", (student_id, class_id,)).fetchall()
     new_count = com_count[0][0] + 1
+
+    # adjust new count in studentClass
+    get_db().execute("UPDATE studentClass SET req_completion_count = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (new_count, datetime, student_id, class_id,))
+    get_db().commit()
+
+    return redirect("/student_tracker")
+
+@app.route("/undo_req", methods=["POST"])
+@login_required
+def undo_req():
+    datetime = time.asctime(time.localtime(time.time()))
+    min_req_id = request.form.get("req_id")
+    student_id = session["student_id"]
+    class_id = session["class_id"]
+
+    get_db().execute("DELETE FROM student_com_req WHERE min_req_id = ? AND student_id = ?", (min_req_id, student_id,))
+    get_db().commit()
+
+    # get old count of completed number to add to it
+    com_count = get_db().execute("SELECT req_completion_count FROM studentClass WHERE student_id = ? AND class_id = ?", (student_id, class_id,)).fetchall()
+    new_count = com_count[0][0] - 1
 
     # adjust new count in studentClass
     get_db().execute("UPDATE studentClass SET req_completion_count = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (new_count, datetime, student_id, class_id,))
