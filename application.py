@@ -301,7 +301,6 @@ def teacher_home():
     else:
         # assign user id for signed in user
         teacherId = session["user_id"]
-
         session["user_adviser"] = 'false'
 
         # get list of student classes assigned to the teacher who is logged in
@@ -309,6 +308,29 @@ def teacher_home():
 
         # get name of teacher for welcome page
         teacher_info = get_db().execute("SELECT firstname, lastname FROM user WHERE id = ?", (teacherId,)).fetchall()
+
+
+        student_com_grab = get_db().execute("SELECT req_completion_count, class_id, student_id FROM studentClass WHERE teacher_id = ?", (teacherId,)).fetchall()
+        class_req_grab = get_db().execute("SELECT req_count, id FROM class").fetchall()
+
+
+        progress = [[]]
+        for student in student_com_grab:
+            for classes in class_req_grab:
+                if student["class_id"] == classes["id"]:
+                    class_req = classes[0]
+                    student_com = student[0]
+                    print(class_req)
+                    print(student_com)
+                    student_id = student[2]
+                    print(student_id)
+                    progress_piece = (student_com / class_req) * 100
+                    #progress.append(student_id, progress_piece)
+
+
+
+
+
 
         return render_template("teacher_home.html", teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
 

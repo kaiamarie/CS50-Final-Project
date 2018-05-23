@@ -15,7 +15,7 @@
           <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}"></input>
           <button class="btn btn-link" style="text-align: left;"  type="submit">
             <div class="container-fluid">
-              <h2 class="display-2" style="font-size: 20px; color: #2BBBAD;">
+              <h2 class="display-2" style="font-size: 20px; color: #000000;">
                 <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
                 {{  class.class_title  }}<br>
               <sup>Grade: {{ class.grade  }}</sup><br>
@@ -31,14 +31,26 @@
 
 {% block main %}
 
-    {% for teacher in teacher_info %}
-    <h1 class="display-2">Welcome, {{  teacher.firstname  }}!</h1>
-    {% endfor %}
-
-
-
-    <div class="progress">
-      <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+  <div class="container-fluid" style="margin-left: 10px;">
+    <div class="row">
+        {% for teacher in teacher_info %}
+        <h1 class="display-2 float-left">Welcome, {{  teacher.firstname  }}!</h1>
+        {% endfor %}
     </div>
 
+    <div class="row" style="margin-top: 50px;">
+      <div class="col-sm-4">
+        <h2 class="display-4" style="font-size: 25px; text-align: left;">Class Progress Overview</h2>
+        {% for class in teacher_classes %}
+          {% if class.teacher_id == teacherId %}
+              <h2 class="display-2" style="font-size: 20px; text-align: left; color: #000000;">
+                <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+                {{  class.class_title  }}<br>
+            </h2>
+          
+          {% endif %}
+        {% endfor %}
+      <div>
+    </div>
+  </div>
 {% endblock %}
