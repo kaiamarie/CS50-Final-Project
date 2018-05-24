@@ -54,6 +54,7 @@
               {% for class in stclasses %}
                 {% if student.id == class.student_id %}
                   {{  class.class_title  }}<br>
+                  <sup>{{  class.firstname  }} {{  class.lastname  }}</sup><br>
                 {% endif %}
               {% endfor %}
               <br>

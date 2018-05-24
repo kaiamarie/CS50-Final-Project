@@ -235,7 +235,7 @@ def assignclass():
         return redirect("/assignclass")
     else:
         students = get_db().execute("SELECT id, lastname_s, firstname_s, grade from student ORDER BY lastname_s ASC").fetchall()
-        stclasses = get_db().execute("SELECT class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id FROM class  INNER JOIN studentClass ON class_id=class.id ORDER BY class_title ASC").fetchall()
+        stclasses = get_db().execute("SELECT class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
         classes = get_db().execute("SELECT id, class_title FROM class ORDER BY class_title ASC").fetchall()
         teachers = get_db().execute("SELECT user_id, firstname, lastname, user.id FROM teacher INNER JOIN user ON user.id=teacher.user_id").fetchall()
         return render_template("assignclass.html", students=students, classes=classes, teachers=teachers, stclasses=stclasses)
@@ -306,22 +306,25 @@ def teacher_home():
 
         student_com_grab = get_db().execute("SELECT req_completion_count, class_id, student_id FROM studentClass WHERE teacher_id = ?", (teacherId,)).fetchall()
         class_req_grab = get_db().execute("SELECT req_count, id FROM class").fetchall()
+        print(class_req_grab)
 
-        for student in student_com_grab:
-            for classes in class_req_grab:
-                if student["class_id"] == classes["id"]:
-                    class_req = classes[0]
-                    student_com = student[0]
-                    percent = (student_com / class_req) * 100
+        if not class_req_grab == '':
+            for student in student_com_grab:
+                for classes in class_req_grab:
+                    if student["class_id"] == classes["id"]:
+                        class_req = classes[0]
+                        if class_req != 0:
+                            student_com = student[0]
+                            percent = (student_com / class_req) * 100
 
-                    get_db().execute("UPDATE studentClass SET com_percent = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (percent, datetime, student["student_id"], student["class_id"],))
-                    get_db().commit()
+                            get_db().execute("UPDATE studentClass SET com_percent = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (percent, datetime, student["student_id"], student["class_id"],))
+                            get_db().commit()
 
         # get list of student classes assigned to the teacher who is logged in
         teacher_classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
 
         # get a list of student classes for network of other classes/teachers a teacher's students have
-        network = get_db().execute("SELECT firstname_s, lastname_s FROM student INNER JOIN ")
+        #network = get_db().execute("SELECT firstname_s, lastname_s FROM student INNER JOIN ")
 
 
 
