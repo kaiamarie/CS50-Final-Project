@@ -16,10 +16,11 @@
     </div>
 
     <div class="row" style="margin-top: 50px;">
-      <div class="col-sm-4">
+      <div class="col-sm-12">
         <h2 class="display-4" style="font-size: 25px; text-align: left;">Class Progress Overview</h2><br>
         {% for class in teacher_classes %}
           {% if class.teacher_id == teacherId %}
+            <div class="col-sm-6" style="min-height: 150px;">
               <form action="/teacher_home" style="text-align: left;" method="post">
                 <input type="text" class="form-control hidden" name="student_id" value="{{ class.student_id }}"></option>
                 <input type="text" class="form-control hidden" name="class_id" value="{{ class.class_id }}"></input>
@@ -36,16 +37,16 @@
                 <div class="progress">
                     <div class="progress-bar" role="progressbar" style="width: {{ class.com_percent }}%; background-color: #2BBBAD" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+              </div>
           {% endif %}
         {% endfor %}
       </div>
-
-      <div class="col-7-sm">
-          <h2 class="display-4" style="margin-left: 100px; font-size: 25px; text-align: left;">My Network</h2>
-
-
-
-      </div>
     </div>
   </div>
+{% endblock %}
+
+
+{% block sidenav %}
+  <h2 class="display-4" style="font-size: 25px; text-align: left;">Announcements</h2><br>
+
 {% endblock %}

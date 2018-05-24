@@ -323,11 +323,6 @@ def teacher_home():
         # get list of student classes assigned to the teacher who is logged in
         teacher_classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
 
-        # get a list of student classes for network of other classes/teachers a teacher's students have
-        #network = get_db().execute("SELECT firstname_s, lastname_s FROM student INNER JOIN ")
-
-
-
         return render_template("teacher_home.html", teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
 
 @app.route("/student_tracker", methods=["GET", "POST"])
@@ -372,7 +367,10 @@ def student_tracker():
         class_req_grab = get_db().execute("SELECT req_count FROM class WHERE id = ?", (class_id,)).fetchall()
         class_req = class_req_grab[0][0]
 
-        progress = (student_com / class_req) * 100
+        if class_req != 0:
+            progress = (student_com / class_req) * 100
+        else:
+            progress = 0
 
         for req in min_req:
             for com in com_req:
