@@ -33,7 +33,7 @@
   <div id="class_list" style="padding-left: 10px; font-size: 16px;">
       <h1 class="display-4">Students</h1>
           {%for student in students%}
-              {{  student.lastname }}, {{  student.firstname  }}<br>
+              {{  student.lastname_s }}, {{  student.firstname_s  }}<br>
               <sup>Grade: {{ student.grade  }}</sup><br>
           {%endfor%}
 </div>

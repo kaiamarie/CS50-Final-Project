@@ -13,8 +13,8 @@ create table user (
 drop table if exists student;
 create table student (
     id integer primary key autoincrement,
-    firstname text not null,
-    lastname text not null,
+    firstname_s text not null,
+    lastname_s text not null,
     grade integer,
     enrollment_date date,
     created_at datetime,
@@ -28,6 +28,7 @@ create table studentClass (
     class_id integer not null,
     teacher_id integer not null,
     req_completion_count integer,
+    com_percent integer,
     hours_purchased integer,
     start_date date,
     end_date date,

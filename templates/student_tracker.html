@@ -16,7 +16,7 @@
           <button class="btn btn-link" style="text-align: left;"  type="submit">
             <div class="container-fluid">
               <h2 class="display-2" style="font-size: 20px; color: #000000;">
-                <b>{{  class.lastname }}, {{  class.firstname  }}</b><br>
+                <b>{{  class.lastname_s }}, {{  class.firstname_s  }}</b><br>
                 {{  class.class_title  }}<br>
               <sup>Grade: {{ class.grade  }}</sup><br>
             </h2>
@@ -33,7 +33,7 @@
 
     <div class="container-fluid">
       {% for student in student_name %}
-        <h1 class="display-2" style="text-align: left;">{{  student.firstname  }} {{  student.lastname  }}</h1>
+        <h1 class="display-2" style="text-align: left;">{{  student.firstname_s  }} {{  student.lastname_s  }}</h1>
       {% endfor %}
       {% for class in class_title %}
         <h1 class="display-4" style="text-align: left;">{{  class.class_title  }}</h1></br></br>

@@ -15,7 +15,7 @@
                   <select class="form-control" name="studentname" id="studentname" required style="margin-bottom: 5px;">
                       <option value="">Select a Student</option>
                         {%for student in students%}
-                          <option value="{{  student.id }}">{{  student.lastname }}, {{  student.firstname  }}</option>
+                          <option value="{{  student.id }}">{{  student.lastname_s }}, {{  student.firstname_s  }}</option>
                         {%endfor%}
                   </select>
                   <select class="form-control" name="class" id="class" required style="margin-bottom: 5px;">
@@ -49,7 +49,7 @@
   <div id="class_list" style="padding-left: 10px; font-size: 16px;">
       <h1 class="display-4">Students</h1>
           {% for student in students %}
-              <b>{{  student.lastname }}, {{  student.firstname  }}</b><br>
+              <b>{{  student.lastname_s }}, {{  student.firstname_s  }}</b><br>
               <sup>Grade: {{ student.grade  }}</sup><br>
               {% for class in stclasses %}
                 {% if student.id == class.student_id %}
