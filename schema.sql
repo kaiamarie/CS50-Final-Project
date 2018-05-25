@@ -94,3 +94,10 @@ create table student_com_req (
     created_at datetime,
     updated_at datetime
 );
+
+drop table if exists announcement;
+create table announcement (
+    id integer primary key autoincrement,
+    announcement text not null,
+    created_at datetime
+);

@@ -5,5 +5,58 @@
 {% endblock %}
 
 {% block main %}
-  <h1>Adviser Home</h1>
+    <div class="container-fluid" style="margin-left: 10px;">
+      <div class="row" style="margin-bottom: 50px;">
+          {% for adviser in adviser_info %}
+              <h1 class="display-2 float-left">Welcome, {{  adviser.firstname  }}!</h1>
+          {% endfor %}
+      </div>
+      <div class="col-sm-3">
+          <h2 class="display-4" style="font-size: 25px; text-align: left;">Make a New Announcement</h2><br>
+          <form action="/adviser_home" method="post">
+            <textarea class="form-control" name="announcement" rows="5" placeholder="New announcement..." style="margin-bottom: 5px;"></textarea>
+            <button class="btn btn-secondary" type="submit">Post Announcement</button><br><br>
+          </form>
+      </div>
+      <div class="col-sm-8" style="margin-left: 50px;">
+
+          <h2 class="display-4" style="font-size: 25px; text-align: left;">Student Progress</h2><br>
+          <div class="row">
+          {% for student in students %}
+            <div class="col-sm-6">
+              <h2 class="display-4" style="font-size: 20px; text-align: left;"><b>{{  student.lastname_s }}, {{  student.firstname_s  }}</b><br>
+              <sup>Grade: {{ student.grade  }}</sup><br></h2>
+              {% for class in stclasses %}
+                {% if student.id == class.student_id %}
+                  <h2 class="display-4" style="font-size: 16px; text-align: left;">{{  class.class_title  }}<br>
+                  <sup>{{  class.firstname  }} {{  class.lastname  }}</sup><br></h2>
+                  <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: {{ student.com_percent }}%; background-color: #2BBBAD" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+              <br>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}
+
+{% block sidenav %}
+  <div class="container-fluid">
+    <h2 class="display-4" style="font-size: 25px; text-align: left;">Announcements</h2><br>
+    {% for announcement in announcements %}
+      <div class="row" style="margin-left: 5px; margin-bottom: 20px;">
+        <h2 class="display-4" style="font-size: 20px; text-align: left;">{{  announcement.announcement  }}</h2><br>
+        {{  announcement.created_at  }}
+        <form action="/delete_announcement" method="post" style="margin-top: 5px;">
+          <input class="form-control hidden" name="announcement_id" value="{{  announcement.id  }}" style="margin-bottom: 5px;"></input>
+          <button class="btn btn-sm btn-secondary" type="submit">Delete Announcement</button><br><br>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}

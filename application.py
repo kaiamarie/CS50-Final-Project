@@ -6,6 +6,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import login_required, apology
 import time
+import datetime
 
 app = Flask(__name__)
 app.config['DATABASE'] = 'tmp/application.db'
@@ -38,7 +39,7 @@ def index():
 
     if len(user_id) != 0:
         session["user_adviser"] = "true"
-        return render_template("adviser_home.html")
+        return redirect("/adviser_home")
 
     else:
         session["user_adviser"] = "false"
@@ -134,7 +135,7 @@ def register():
                     (user_id[0][0], datetime, datetime,))
             get_db().commit()
             session["user_adviser"] = "true"
-            return render_template("adviser_home.html")
+            return redirect("/adviser_home")
 
 
         elif request.form.get("user_type") == "teacher":
@@ -320,10 +321,54 @@ def teacher_home():
                             get_db().execute("UPDATE studentClass SET com_percent = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (percent, datetime, student["student_id"], student["class_id"],))
                             get_db().commit()
 
+        # get information for Student Progress
+        students = get_db().execute("SELECT id, lastname_s, firstname_s, grade from student ORDER BY lastname_s ASC").fetchall()
+        stclasses = get_db().execute("SELECT studentClass.com_percent, class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
+
         # get list of student classes assigned to the teacher who is logged in
         teacher_classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
 
-        return render_template("teacher_home.html", teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
+        # get announcements
+        announcements = get_db().execute("SELECT * FROM announcement").fetchall()
+
+        return render_template("teacher_home.html", announcements = announcements, students = students, stclasses = stclasses, teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
+
+@app.route("/adviser_home", methods=["GET", "POST"])
+@login_required
+def adviser_home():
+    if request.method == "POST":
+        datetime = time.asctime(time.localtime(time.time()))
+
+        get_db().execute("INSERT INTO announcement (announcement, created_at) VALUES (?,?)", (request.form.get("announcement"), datetime,))
+        get_db().commit()
+
+        return redirect("/adviser_home")
+
+    else:
+        datetime = time.asctime(time.localtime(time.time()))
+
+        # assign user id for signed in user
+        adviser_id = session["user_id"]
+
+        # get adviser name for Welcome
+        adviser_info = get_db().execute("SELECT firstname, lastname FROM user WHERE id = ?", (adviser_id,)).fetchall()
+
+        # get information for Student Progress
+        students = get_db().execute("SELECT id, lastname_s, firstname_s, grade from student ORDER BY lastname_s ASC").fetchall()
+        stclasses = get_db().execute("SELECT studentClass.com_percent, class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
+
+        # get Announcements
+        announcements = get_db().execute("SELECT * FROM announcement").fetchall()
+
+        return render_template("adviser_home.html", students = students, stclasses = stclasses, announcements= announcements, adviser_info = adviser_info)
+
+@app.route("/delete_announcement", methods=["POST"])
+@login_required
+def delete_announcement():
+    get_db().execute("DELETE FROM announcement WHERE id = ?", (request.form.get("announcement_id"),))
+    get_db().commit()
+
+    return redirect("/adviser_home")
 
 @app.route("/student_tracker", methods=["GET", "POST"])
 @login_required
