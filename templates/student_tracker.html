@@ -110,7 +110,18 @@
 
                           {{  assignment.assignment_name  }}</h2>
 
-                          <p style="font-size: 12px; text-align: left;">{{  assignment.assignment_info  }}</p>
+                          <p style="font-size: 12px; text-align: left;">{{  assignment.assignment_info  }}<br>
+                          <form action="/delete_assignment"  style="text-align: left;" method="post">
+                            <input type="text" class="form-control hidden" name="assignment_id" value="{{ assignment.id }}"></input>
+                            <button class="btn btn-link" style="text-align: left;"  type="submit">
+                                <h2 class="display-2" style="font-size: 10px; color: #000000;">
+                                  Delete This Assignment
+                              </h2>
+                            </button>
+                          </form>
+                        </p>
+
+
 
                     {% endif %}
                   {% endfor %}

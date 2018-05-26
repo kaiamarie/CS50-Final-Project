@@ -16,4 +16,4 @@ def login_required(f):
 def apology(message):
     """Renders message as an apology to user."""
     message = message
-    return render_template("errormessage.html", message=message)
+    return render_template("error_message.html", message=message)

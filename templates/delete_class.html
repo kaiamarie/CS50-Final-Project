@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Add Class
+    Delete Class
 {% endblock %}
 
 {% block main %}
@@ -11,7 +11,7 @@
   <h4 class="display-4">Warning! This will permanently delete the class file.
     <br>Requirements and students enrolled will also be deleted.<br><br></h4>
   <div class="justify-content-center row">
-  <form action="/deleteclass" method="post">
+  <form action="/delete_class" method="post">
 
         <div class="form-row regform justify-content-center">
                 <select class="form-control" name="classtitle" id="classtitle" placeholder="Select a Class" required style="margin-bottom: 5px;">

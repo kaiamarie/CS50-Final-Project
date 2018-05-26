@@ -11,7 +11,7 @@
   <h4 class="display-4">Add a class for your students to sign up for!
     <br>Register students for the class with the <b>Assign Class</b> tab.<br><br></h4>
   <div class="justify-content-center row">
-  <form action="/addclass" method="post">
+  <form action="/add_class" method="post">
 
               <div class="form-row regform justify-content-center">
                       <input type="text" class="form-control" name="classtitle" id="classtitle" placeholder="Class Name" required style="margin-bottom: 5px;">
@@ -36,7 +36,11 @@
 
 {% block sidenav %}
   <div id="class_list" style="padding-left: 10px; font-size: 16px;">
-      <h1 class="display-4">Classes</h1>
+      <h1 class="display-4">Classes
+
+      <a href="/delete_class" style="font-size: 12px;">Delete a Class</a>
+      </h1>
+
 
       <b>Foreign Language</b><br>
           {%for class in flclasses%}

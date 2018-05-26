@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Delete Student
+{% endblock %}
+
+{% block main %}
+  <h1 class="display-2">Delete a Student</h1><br>
+
+
+  <h4 class="display-4">Warning! This will permanently delete the student's records.</h4><br>
+  <div class="justify-content-center row">
+  <form action="/delete_student" method="post">
+
+        <div class="form-row regform justify-content-center">
+                <select class="form-control" name="student" placeholder="Select a Student" required style="margin-bottom: 5px;">
+                    <option value="">Select a Student</option>
+                  {% for student in students %}
+                    <option value="{{  student.id }}">{{  student.lastname_s }}, {{  student.firstname_s }}</option>
+                    {%endfor%}
+                </select>
+        </div>
+        <div>
+            <p></p>
+            <button class="btn btn-primary" type="submit">Delete Student</button>
+        </div>
+  </form>
+  </div>
+
+{% endblock %}
+
+{% block sidenav %}
+    <div id="class_list" style="padding-left: 10px; font-size: 16px;">
+        <h1 class="display-4">Students</h1>
+            {%for student in students%}
+                {{  student.lastname_s }}, {{  student.firstname_s  }}<br>
+                <sup>Grade: {{ student.grade  }}</sup><br>
+            {%endfor%}
+    </div>
+
+{% endblock %}

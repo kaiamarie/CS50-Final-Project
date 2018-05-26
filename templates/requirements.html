@@ -66,8 +66,15 @@
           {% for req in min_req %}
               {% if class.id == req.class_id %}
                   <div class="container-fluid">
+                    <form action="/delete_requirement" method="post">
+                      <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                      <button data-toggle="popover" title="Delete requirement for all students" data-trigger="hover" class="btn float-left" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+                    </form>
+
                     <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
-                    <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                    <p style="text-align: left; margin-left: 35px;">{{  req.req_description  }}</p>
                   </div>
               {% endif %}
           {% endfor %}
@@ -103,8 +110,14 @@
             {% for req in min_req %}
                 {% if class.id == req.class_id %}
                     <div class="container-fluid">
+                      <form action="/delete_requirement" method="post">
+                        <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                        <button data-toggle="popover" title="Delete requirement for all students" data-trigger="hover" class="btn float-left" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                      </form>
                       <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
-                      <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                      <p style="text-align: left; margin-left: 35px;">{{  req.req_description  }}</p>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -139,8 +152,14 @@
             {% for req in min_req %}
                 {% if class.id == req.class_id %}
                     <div class="container-fluid">
+                      <form action="/delete_requirement" method="post">
+                        <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                        <button data-toggle="popover" title="Delete requirement for all students" data-trigger="hover" class="btn float-left" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                      </form>
                       <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
-                      <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                      <p style="text-align: left; margin-left: 35px;">{{  req.req_description  }}</p>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -175,8 +194,14 @@
                 {% for req in min_req %}
                     {% if class.id == req.class_id %}
                         <div class="container-fluid">
+                          <form action="/delete_requirement" method="post">
+                            <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                            <button data-toggle="popover" title="Delete requirement for all students" data-trigger="hover" class="btn float-left" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                              <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                          </form>
                           <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
-                          <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                          <p style="text-align: left; margin-left: 35px;">{{  req.req_description  }}</p>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -211,8 +236,14 @@
                   {% for req in min_req %}
                       {% if class.id == req.class_id %}
                           <div class="container-fluid">
+                            <form action="/delete_requirement" method="post">
+                              <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                              <button data-toggle="popover" title="Delete requirement for all students" data-trigger="hover" class="btn float-left" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </button>
+                            </form>
                             <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
-                            <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                            <p style="text-align: left; margin-left: 35px;">{{  req.req_description  }}</p>
                           </div>
                       {% endif %}
                   {% endfor %}
@@ -247,8 +278,14 @@
                     {% for req in min_req %}
                         {% if class.id == req.class_id %}
                             <div class="container-fluid">
+                              <form action="/delete_requirement" method="post">
+                                <input value="{{  req.id  }}" class="hidden" name="req_id"></input>
+                                <button data-toggle="popover" title="Delete requirement for all students" data-trigger="hover" class="btn float-left" style="background-color: #2BBBAD; margin-right: 5px; color: #ffffff;" type="submit">
+                                  <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                              </form>
                               <h4 style="text-align: left; margin-left: 10px;">{{  req.req_title  }}</h4>
-                              <p style="text-align: left; margin-left: 10px;">{{  req.req_description  }}</p>
+                              <p style="text-align: left; margin-left: 35px;">{{  req.req_description  }}</p>
                             </div>
                         {% endif %}
                     {% endfor %}

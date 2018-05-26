@@ -161,9 +161,9 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
-@app.route("/addclass", methods=["GET", "POST"])
+@app.route("/add_class", methods=["GET", "POST"])
 @login_required
-def addclass():
+def add_class():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
 
@@ -171,7 +171,7 @@ def addclass():
                    (request.form.get("classtitle"), request.form.get("department"), request.form.get("credit"), datetime, datetime, 0,))
         get_db().commit()
 
-        return redirect("/addclass")
+        return redirect("/add_class")
     else:
         # get classes for the side list
         flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
@@ -181,18 +181,18 @@ def addclass():
         ssclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("socialstudies",)).fetchall()
         techclasses = get_db().execute("SELECT class_title FROM class WHERE department = ?  ORDER BY class_title ASC", ("technology",)).fetchall()
 
-        return render_template("addclass.html", flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
+        return render_template("add_class.html", flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
-@app.route("/deleteclass", methods=["GET", "POST"])
+@app.route("/delete_class", methods=["GET", "POST"])
 @login_required
-def deleteclass():
+def delete_class():
     if request.method == "POST":
 
         get_db().execute("DELETE FROM class WHERE class_title = ?",
                    (request.form.get("classtitle"),))
         get_db().commit()
 
-        return redirect("/deleteclass")
+        return redirect("/delete_class")
     else:
         # get classes for the side list
         flclasses = get_db().execute("SELECT class_title FROM class WHERE department = ? ORDER BY class_title ASC", ("foreignlanguage",)).fetchall()
@@ -205,11 +205,11 @@ def deleteclass():
 
         classes = get_db().execute("SELECT class_title FROM class").fetchall()
 
-        return render_template("deleteclass.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
+        return render_template("delete_class.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
-@app.route("/enrollstudent", methods=["GET", "POST"])
+@app.route("/enroll_student", methods=["GET", "POST"])
 @login_required
-def enrollstudent():
+def enroll_student():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
 
@@ -217,15 +217,15 @@ def enrollstudent():
                     (request.form.get("lastname"), request.form.get("firstname"), request.form.get("grade"), request.form.get("enrolldate"), datetime, datetime,))
         get_db().commit()
 
-        return redirect("/enrollstudent")
+        return redirect("/enroll_student")
     else:
         students = get_db().execute("SELECT lastname_s, firstname_s, grade FROM student ORDER BY lastname_s ASC")
 
-        return render_template("enrollstudent.html", students=students)
+        return render_template("enroll_student.html", students=students)
 
-@app.route("/assignclass", methods=["GET", "POST"])
+@app.route("/assign_class", methods=["GET", "POST"])
 @login_required
-def assignclass():
+def assign_class():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
 
@@ -233,13 +233,13 @@ def assignclass():
                     (request.form.get("studentname"), request.form.get("class"), request.form.get("teacher"), request.form.get("hours"), request.form.get("startdate"), request.form.get("enddate"), datetime, datetime, 0,))
         get_db().commit()
 
-        return redirect("/assignclass")
+        return redirect("/assign_class")
     else:
         students = get_db().execute("SELECT id, lastname_s, firstname_s, grade from student ORDER BY lastname_s ASC").fetchall()
         stclasses = get_db().execute("SELECT class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
         classes = get_db().execute("SELECT id, class_title FROM class ORDER BY class_title ASC").fetchall()
         teachers = get_db().execute("SELECT user_id, firstname, lastname, user.id FROM teacher INNER JOIN user ON user.id=teacher.user_id").fetchall()
-        return render_template("assignclass.html", students=students, classes=classes, teachers=teachers, stclasses=stclasses)
+        return render_template("assign_class.html", students=students, classes=classes, teachers=teachers, stclasses=stclasses)
 
 @app.route("/requirements", methods=["GET", "POST"])
 @login_required
@@ -279,7 +279,7 @@ def requirements():
         classes = get_db().execute("SELECT class_title FROM class").fetchall()
 
         # get min reqs to populate req lists in new_req_body
-        min_req = get_db().execute("SELECT class_id, req_title, req_description FROM min_req ORDER BY req_title ASC").fetchall()
+        min_req = get_db().execute("SELECT class_id, req_title, req_description, id FROM min_req ORDER BY req_title ASC").fetchall()
 
         return render_template("requirements.html", min_req=min_req, classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
@@ -326,12 +326,14 @@ def teacher_home():
         stclasses = get_db().execute("SELECT studentClass.com_percent, class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
 
         # get list of student classes assigned to the teacher who is logged in
-        teacher_classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id").fetchall()
+        teacher_classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade, user.firstname, user.lastname FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id INNER JOIN user ON studentClass.teacher_id = user.id").fetchall()
+
+        classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade, user.firstname, user.lastname FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id INNER JOIN user ON studentClass.teacher_id = user.id").fetchall()
 
         # get announcements
         announcements = get_db().execute("SELECT * FROM announcement").fetchall()
 
-        return render_template("teacher_home.html", announcements = announcements, students = students, stclasses = stclasses, teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
+        return render_template("teacher_home.html", classes = classes, announcements = announcements, students = students, stclasses = stclasses, teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
 
 @app.route("/adviser_home", methods=["GET", "POST"])
 @login_required
@@ -505,3 +507,81 @@ def undo_assignment():
     get_db().commit()
 
     return redirect("/student_tracker")
+
+@app.route("/delete_requirement", methods=["POST"])
+@login_required
+def delete_requirement():
+    datetime = time.asctime(time.localtime(time.time()))
+
+    # update req_count
+    class_id = get_db().execute("SELECT class_id FROM min_req WHERE id = ?", (request.form.get("req_id"),)).fetchall()
+    old_count = get_db().execute("SELECT req_count FROM class WHERE id = ?", (class_id[0][0],)).fetchall()
+    new_count = old_count[0][0] - 1
+
+    get_db().execute("UPDATE class SET req_count = ?, updated_at = ? WHERE id = ?", (new_count, datetime, class_id[0][0],))
+    get_db().commit()
+
+    # update student completion counts
+    students = get_db().execute("SELECT student_id FROM student_com_req WHERE min_req_id = ?", (request.form.get("req_id"),)).fetchall()
+    for student in students:
+        old_com_count = get_db().execute("SELECT req_completion_count FROM studentClass WHERE student_id = ?", (student["student_id"],)).fetchall()
+        if old_com_count[0] != 0:
+            new_com_count = old_com_count - 1
+        else:
+            new_com_count = old_com_count
+
+        if new_count != 0:
+            new_percent = (new_com_count / new_count) * 100
+        else:
+            new_percent = 0
+
+        get_db().execute("UPDATE studentClass SET req_completion_count = ?, com_percent = ?, updated_at = ?", (new_count, new_percent, datetime,))
+        get_db().commit()
+
+    # delete associated assignments
+    get_db().execute("DELETE FROM assignment WHERE min_req_id = ?", (request.form.get("req_id"),))
+    get_db().commit()
+
+    # delete the requirement
+    get_db().execute("DELETE FROM min_req WHERE id = ?", (request.form.get("req_id"),))
+    get_db().commit()
+
+    return redirect("/requirements")
+
+@app.route("/delete_student", methods=["GET", "POST"])
+@login_required
+def delete_student():
+    if request.method == "POST":
+        id = request.form.get("student")
+
+        # delete student record
+        get_db().execute("DELETE FROM student WHERE id = ?", (id,))
+        get_db().commit()
+
+        # delete student class record
+        get_db().execute("DELETE FROM studentClass WHERE student_id = ?", (id,))
+        get_db().commit()
+
+        # delete assignment record
+        get_db().execute("DELETE FROM assignment WHERE student_id = ?", (id,))
+        get_db().commit()
+
+        # delete student_com_req record
+        get_db().execute("DELETE FROM student_com_req WHERE student_id = ?", (id,))
+        get_db().commit()
+
+        return redirect("/delete_student")
+    else:
+        students = get_db().execute("SELECT id, grade, firstname_s, lastname_s FROM student ORDER BY lastname_s ASC").fetchall()
+
+        return render_template("delete_student.html", students = students)
+
+@app.route("/delete_assignment", methods=["POST"])
+@login_required
+def delete_assignment():
+    id = request.form.get("assignment_id")
+
+    get_db().execute("DELETE FROM assignment WHERE id = ?", (id,))
+    get_db().commit()
+
+    return redirect("student_tracker")

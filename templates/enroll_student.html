@@ -11,7 +11,7 @@
   <h4 class="display-4">Add a Student to your school!
     <br>To assign classes to the student, us the <b>Assign Class</b> tab.<br><br></h4>
   <div class="justify-content-center row">
-  <form action="/enrollstudent" method="post">
+  <form action="/enroll_student" method="post">
 
               <div class="form-row regform justify-content-center">
                       <input type="text" class="form-control" name="firstname" id="firstname" placeholder="First Name" required style="margin-bottom: 5px;" required>
@@ -31,7 +31,9 @@
 
 {% block sidenav %}
   <div id="class_list" style="padding-left: 10px; font-size: 16px;">
-      <h1 class="display-4">Students</h1>
+      <h1 class="display-4">Students
+        <a href="/delete_student" style="font-size: 12px;">Delete a Student</a>
+      </h1>
           {%for student in students%}
               {{  student.lastname_s }}, {{  student.firstname_s  }}<br>
               <sup>Grade: {{ student.grade  }}</sup><br>
