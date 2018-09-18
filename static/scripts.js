@@ -1,10 +1,9 @@
 // function to check in register.html that password and confirm password are the same
+// from https://stackoverflow.com/questions/39473247/javascript-password-and-password-confirmation-match
 function passcheck() {
 
       var password = document.getElementById("password")
         , confirmation = document.getElementById("confirmation");
-
-
 
       function validatePassword(){
         if(password.value != confirmation.value) {

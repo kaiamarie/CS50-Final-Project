@@ -331,7 +331,7 @@ def teacher_home():
         classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade, user.firstname, user.lastname FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id INNER JOIN user ON studentClass.teacher_id = user.id").fetchall()
 
         # get announcements
-        announcements = get_db().execute("SELECT * FROM announcement").fetchall()
+        announcements = get_db().execute("SELECT * FROM announcement ORDER BY id DESC").fetchall()
 
         return render_template("teacher_home.html", classes = classes, announcements = announcements, students = students, stclasses = stclasses, teacher_info = teacher_info, teacher_classes = teacher_classes, teacherId = teacherId)
 
@@ -360,7 +360,7 @@ def adviser_home():
         stclasses = get_db().execute("SELECT studentClass.com_percent, class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
 
         # get Announcements
-        announcements = get_db().execute("SELECT * FROM announcement").fetchall()
+        announcements = get_db().execute("SELECT * FROM announcement ORDER BY id DESC").fetchall()
 
         return render_template("adviser_home.html", students = students, stclasses = stclasses, announcements= announcements, adviser_info = adviser_info)
 
@@ -585,3 +585,14 @@ def delete_assignment():
     get_db().commit()
 
     return redirect("student_tracker")
+
+@app.route("/gradebook", methods=["GET", "POST"])
+@login_required
+def gradebook():
+    if request.method == "POST":
+
+        return redirect("/gradebook")
+    else:
+
+
+        return render_template("gradebook.html")
