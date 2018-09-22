@@ -27,7 +27,7 @@ create table studentClass (
     student_id integer not null,
     class_id integer not null,
     teacher_id integer not null,
-    req_completion_count integer,
+    req_completion_count integer default 0,
     com_percent integer,
     hours_purchased integer,
     start_date date,
@@ -100,4 +100,27 @@ create table announcement (
     id integer primary key autoincrement,
     announcement text not null,
     created_at datetime
+);
+
+drop table if exists weighting;
+create table weighting (
+    id integer primary key autoincrement,
+    studentClass_id integer not null,
+    participation integer not null default 25,
+    acquisiting integer not null default 25,
+    application integer not null default 25,
+    retention integer not null default 25,
+    created_at datetime,
+    updated_at datetime
+);
+
+drop table if exists gradebook;
+create table gradebook (
+    id integer primary key autoincrement,
+    assignment_id integer not null,
+    category text not null,
+    max_point integer not null,
+    earned_point integer not null,
+    created_at datetime,
+    updated_at datetime
 );
