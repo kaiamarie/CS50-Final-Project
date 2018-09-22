@@ -427,7 +427,22 @@ def student_tracker():
 
         min_req = get_db().execute("SELECT id, req_title, req_description, com_tmp FROM min_req WHERE class_id = ?", (class_id,)).fetchall()
 
-        return render_template("student_tracker.html", progress = progress, assignment = assignment, com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
+        attendance = get_db().execute("SELECT attendance, hours_purchased FROM studentClass WHERE student_id = ? AND class_id = ?", (student_id, class_id,)).fetchall()
+
+        attendance_percent = attendance[0][0] / attendance[0][1]
+        quarter = 1
+
+        if .25 < attendance_percent <= .5:
+            quarter = 2
+        if .5 < attendance_percent <= .75:
+            quarter = 3
+        if attendance_percent > .75:
+            quarter = 4
+
+        hours_remaining_quarter = attendance[0][1] * quarter * .25 - attendance[0][0]
+        hours_remaining_quarter = int(hours_remaining_quarter)
+
+        return render_template("student_tracker.html", hours_remaining_quarter = hours_remaining_quarter, quarter = quarter, attendance = attendance, progress = progress, assignment = assignment, com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
 
 @app.route("/student_req", methods=["POST"])
 @login_required
