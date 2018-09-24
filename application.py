@@ -229,8 +229,21 @@ def assign_class():
     if request.method == "POST":
         datetime = time.asctime(time.localtime(time.time()))
 
-        get_db().execute("INSERT INTO studentClass (student_id, class_id, teacher_id, hours_purchased, start_date, end_date, created_at, updated_at, req_completion_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    (request.form.get("studentname"), request.form.get("class"), request.form.get("teacher"), request.form.get("hours"), request.form.get("startdate"), request.form.get("enddate"), datetime, datetime, 0,))
+        hours = int(request.form.get("hours"))
+
+        hours_remaining_quarter = hours / 4
+
+        hours_remaining_quarter = int(hours_remaining_quarter)
+
+        # check student isn't already enrolled
+        enrollcheck = get_db().execute("SELECT * FROM studentClass WHERE student_id = ? AND class_id = ?",
+                        (request.form.get("studentname"), request.form.get("class"))).fetchall()
+
+        if len(enrollcheck) > 0:
+            return apology("That student is already enrolled in that class")
+
+        get_db().execute("INSERT INTO studentClass (student_id, class_id, teacher_id, hours_purchased, hours_remaining_quarter, start_date, end_date, created_at, updated_at, req_completion_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (request.form.get("studentname"), request.form.get("class"), request.form.get("teacher"), request.form.get("hours"), hours_remaining_quarter, request.form.get("startdate"), request.form.get("enddate"), datetime, datetime, 0,))
         get_db().commit()
 
         return redirect("/assign_class")
@@ -307,7 +320,6 @@ def teacher_home():
 
         student_com_grab = get_db().execute("SELECT req_completion_count, class_id, student_id FROM studentClass WHERE teacher_id = ?", (teacherId,)).fetchall()
         class_req_grab = get_db().execute("SELECT req_count, id FROM class").fetchall()
-        print(class_req_grab)
 
         if not class_req_grab == '':
             for student in student_com_grab:
@@ -326,9 +338,9 @@ def teacher_home():
         stclasses = get_db().execute("SELECT studentClass.com_percent, class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
 
         # get list of student classes assigned to the teacher who is logged in
-        teacher_classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade, user.firstname, user.lastname FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id INNER JOIN user ON studentClass.teacher_id = user.id").fetchall()
+        teacher_classes = get_db().execute("SELECT studentClass.com_percent, studentClass.tracking, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade, user.firstname, user.lastname FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id INNER JOIN user ON studentClass.teacher_id = user.id").fetchall()
 
-        classes = get_db().execute("SELECT studentClass.com_percent, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade, user.firstname, user.lastname FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id INNER JOIN user ON studentClass.teacher_id = user.id").fetchall()
+        classes = get_db().execute("SELECT studentClass.com_percent, studentClass.tracking, studentClass.class_id, studentClass.teacher_id, studentClass.student_id, studentClass.req_completion_count, class.class_title, class.req_count, student.firstname_s, student.lastname_s, student.grade, user.firstname, user.lastname FROM studentClass INNER JOIN class ON class.id = studentClass.class_id INNER JOIN student ON student.id = studentClass.student_id INNER JOIN user ON studentClass.teacher_id = user.id").fetchall()
 
         # get announcements
         announcements = get_db().execute("SELECT * FROM announcement ORDER BY id DESC").fetchall()
@@ -357,7 +369,7 @@ def adviser_home():
 
         # get information for Student Progress
         students = get_db().execute("SELECT id, lastname_s, firstname_s, grade from student ORDER BY lastname_s ASC").fetchall()
-        stclasses = get_db().execute("SELECT studentClass.com_percent, class.id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
+        stclasses = get_db().execute("SELECT studentClass.quarter, studentClass.hours_remaining_quarter, studentClass.hours_purchased, studentClass.attendance, studentClass.com_percent, studentClass.tracking, studentClass.attendance, studentClass.class_id, class.class_title, studentClass.teacher_id, studentClass.class_id, studentClass.student_id, user.lastname, user.firstname FROM class INNER JOIN studentClass ON class_id = class.id INNER JOIN user on studentClass.teacher_id = user.id ORDER BY class_title ASC").fetchall()
 
         # get Announcements
         announcements = get_db().execute("SELECT * FROM announcement ORDER BY id DESC").fetchall()
@@ -371,6 +383,20 @@ def delete_announcement():
     get_db().commit()
 
     return redirect("/adviser_home")
+
+@app.route("/adjust_hours", methods=["POST"])
+@login_required
+def adjust_hours():
+    datetime = time.asctime(time.localtime(time.time()))
+
+    attendance = request.form.get("attendance")
+    student_id = request.form.get("student_id")
+    class_id = request.form.get("class_id")
+
+    get_db().execute("UPDATE studentClass SET attendance = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (attendance, datetime, student_id, class_id,))
+    get_db().commit()
+
+    return redirect("/student_tracker")
 
 @app.route("/student_tracker", methods=["GET", "POST"])
 @login_required
@@ -427,6 +453,8 @@ def student_tracker():
 
         min_req = get_db().execute("SELECT id, req_title, req_description, com_tmp FROM min_req WHERE class_id = ?", (class_id,)).fetchall()
 
+        # Update Attendance
+
         attendance = get_db().execute("SELECT attendance, hours_purchased FROM studentClass WHERE student_id = ? AND class_id = ?", (student_id, class_id,)).fetchall()
 
         attendance_percent = attendance[0][0] / attendance[0][1]
@@ -442,7 +470,16 @@ def student_tracker():
         hours_remaining_quarter = attendance[0][1] * quarter * .25 - attendance[0][0]
         hours_remaining_quarter = int(hours_remaining_quarter)
 
-        return render_template("student_tracker.html", hours_remaining_quarter = hours_remaining_quarter, quarter = quarter, attendance = attendance, progress = progress, assignment = assignment, com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
+        # Update tracking
+
+        attendance_tracker = attendance_percent * 100
+        tracking = progress - attendance_tracker
+
+        get_db().execute("UPDATE studentClass SET tracking = ?, updated_at = ? WHERE student_id = ? AND class_id = ?", (tracking, datetime, student_id, class_id,))
+        get_db().commit()
+
+
+        return render_template("student_tracker.html", tracking = tracking, hours_remaining_quarter = hours_remaining_quarter, quarter = quarter, attendance = attendance, progress = progress, assignment = assignment, com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
 
 @app.route("/student_req", methods=["POST"])
 @login_required

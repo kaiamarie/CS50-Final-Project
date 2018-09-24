@@ -30,7 +30,7 @@
                           <option value="{{  teacher.id }}">{{  teacher.firstname }} {{ teacher.lastname  }}</option>
                         {%endfor%}
                   </select>
-                  <input type="number" class="form-control" min="1" name="hours" id="hours" placeholder="Hours Registered" style="margin-bottom: 5px;">
+                  <input type="number" class="form-control" min="1" name="hours" id="hours" value="100" placeholder="Hours Registered" style="margin-bottom: 5px;">
                   <input type="date" class="form-control" name="startdate" id="startdate" label="Start Date" style="margin-bottomr: 5px;">
                   Start Date
                   <input type="date" class="form-control" name="enddate" id="enddate" label="End Date" style="margin-bottomr: 5px;">
@@ -47,7 +47,9 @@
 
 {% block sidenav %}
   <div id="class_list" style="padding-left: 10px; font-size: 16px;">
-      <h1 class="display-4">Students</h1>
+      <h1 class="display-4">Students
+      <a href="/delete_studentclass" style="font-size: 15px;">Delete a Class</a>
+      <a href="/archive_studentclass" style="font-size: 15px;">Archive a Class</a></h1>
           {% for student in students %}
               <b>{{  student.lastname_s }}, {{  student.firstname_s  }}</b><br>
               <sup>Grade: {{ student.grade  }}</sup><br>

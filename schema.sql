@@ -30,6 +30,9 @@ create table studentClass (
     req_completion_count integer default 0,
     com_percent integer,
     attendance integer default 0,
+    quarter integer default 1,
+    hours_remaining_quarter integer default 25,
+    tracking number default 0,
     hours_purchased integer default 100,
     start_date date,
     end_date date,
@@ -123,6 +126,25 @@ create table gradebook (
     quarter integer not null,
     max_point integer not null,
     earned_point integer not null,
+    created_at datetime,
+    updated_at datetime
+);
+
+drop table if exists archive;
+create table archive (
+    id integer primary key autoincrement,
+    student_id integer not null,
+    class_id integer not null,
+    teacher_id integer not null,
+    req_completion_count integer,
+    com_percent integer,
+    attendance integer,
+    quarter integer,
+    hours_remaining_quarter integer,
+    tracking number,
+    hours_purchased integer,
+    start_date date,
+    end_date date,
     created_at datetime,
     updated_at datetime
 );
