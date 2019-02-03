@@ -1,17 +1,23 @@
 from flask import Flask, render_template, session
+    #http://flask.pocoo.org/
 import os
+    #https://www.python.org/
 from sqlite3 import dbapi2 as sqlite3
+    #https://www.sqlite.org/index.html
 from flask import Flask, _app_ctx_stack
 from flask import Flask, flash, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
+        #http://werkzeug.pocoo.org
 from helpers import login_required, apology
 import time
 import datetime
 
+# Configuration
 app = Flask(__name__)
 app.config['DATABASE'] = 'tmp/application.db'
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
+# Database set up
 def get_db():
     top = _app_ctx_stack.top
     if not hasattr(top, 'sqlite_db'):
@@ -19,6 +25,7 @@ def get_db():
         top.sqlite_db.row_factory = sqlite3.Row
     return top.sqlite_db
 
+# Run to startup a new database
 def init_db():
     db = get_db()
     with app.open_resource('schema.sql', mode='r') as f:
@@ -32,6 +39,7 @@ def initdb_command():
     init_db()
     print('Initialized the database')
 
+# This will check the security of a user and bring them to the right home page
 @app.route("/")
 @login_required
 def index():
@@ -45,6 +53,7 @@ def index():
         session["user_adviser"] = "false"
         return redirect("/teacher_home")
 
+# This will run the login information and redirect appropirately
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -92,6 +101,7 @@ def login():
     else:
         return render_template("login.html")
 
+# For initial registration as a user
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -150,6 +160,7 @@ def register():
     else:
         return render_template("register.html")
 
+# To logout of a session
 @app.route("/logout")
 def logout():
     """Log user out"""
@@ -161,6 +172,7 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
+# An advisor side function to add a new class option under a department
 @app.route("/add_class", methods=["GET", "POST"])
 @login_required
 def add_class():
@@ -207,6 +219,7 @@ def delete_class():
 
         return render_template("delete_class.html", classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
 
+# Enrolls a student into the program, does NOT sign them up for any classes
 @app.route("/enroll_student", methods=["GET", "POST"])
 @login_required
 def enroll_student():
@@ -223,6 +236,7 @@ def enroll_student():
 
         return render_template("enroll_student.html", students=students)
 
+# Signs a student up for a class with a specific teacher
 @app.route("/assign_class", methods=["GET", "POST"])
 @login_required
 def assign_class():
@@ -254,6 +268,7 @@ def assign_class():
         teachers = get_db().execute("SELECT user_id, firstname, lastname, user.id FROM teacher INNER JOIN user ON user.id=teacher.user_id").fetchall()
         return render_template("assign_class.html", students=students, classes=classes, teachers=teachers, stclasses=stclasses)
 
+# This function adds a requirement for completion of a course to the whole course, not just a single student
 @app.route("/requirements", methods=["GET", "POST"])
 @login_required
 def requirements():
@@ -295,6 +310,7 @@ def requirements():
         min_req = get_db().execute("SELECT class_id, req_title, req_description, id FROM min_req ORDER BY req_title ASC").fetchall()
 
         return render_template("requirements.html", min_req=min_req, classes=classes, flclasses=flclasses, humclasses=humclasses, mathclasses=mathclasses, sciclasses=sciclasses, ssclasses=ssclasses, techclasses=techclasses)
+
 
 @app.route("/teacher_home", methods=["GET", "POST"])
 @login_required
@@ -384,6 +400,7 @@ def delete_announcement():
 
     return redirect("/adviser_home")
 
+# This function allows a teacher to adjust the number of class hours completed by a student
 @app.route("/adjust_hours", methods=["POST"])
 @login_required
 def adjust_hours():
@@ -398,6 +415,7 @@ def adjust_hours():
 
     return redirect("/student_tracker")
 
+# This loads the information needed for teachers to see the progress of a selected student and adjust their assignments/progress
 @app.route("/student_tracker", methods=["GET", "POST"])
 @login_required
 def student_tracker():
@@ -481,6 +499,7 @@ def student_tracker():
 
         return render_template("student_tracker.html", tracking = tracking, hours_remaining_quarter = hours_remaining_quarter, quarter = quarter, attendance = attendance, progress = progress, assignment = assignment, com_req = com_req, min_req = min_req, class_title = class_title, student_name = student_name, teacherId = teacherId, teacher_classes = teacher_classes, student_id = student_id, class_id = class_id)
 
+# This function updates completed class requirements by a student
 @app.route("/student_req", methods=["POST"])
 @login_required
 def student_req():
@@ -523,6 +542,7 @@ def undo_req():
 
     return redirect("/student_tracker")
 
+# This function adds an assignment under a requirement for a particular student
 @app.route("/assignment_add", methods=["POST"])
 @login_required
 def assignment_add():
@@ -538,6 +558,7 @@ def assignment_add():
 
     return redirect("/student_tracker")
 
+# This function tracks the completion of assignments
 @app.route("/com_assignment", methods=["POST"])
 @login_required
 def com_assignment():
@@ -560,6 +581,7 @@ def undo_assignment():
 
     return redirect("/student_tracker")
 
+# Deletes a requirement from a class for all students
 @app.route("/delete_requirement", methods=["POST"])
 @login_required
 def delete_requirement():
@@ -600,6 +622,7 @@ def delete_requirement():
 
     return redirect("/requirements")
 
+# Deletes a student from enrollment
 @app.route("/delete_student", methods=["GET", "POST"])
 @login_required
 def delete_student():
@@ -628,6 +651,7 @@ def delete_student():
 
         return render_template("delete_student.html", students = students)
 
+# Deletes and assignment from a student
 @app.route("/delete_assignment", methods=["POST"])
 @login_required
 def delete_assignment():
@@ -638,6 +662,7 @@ def delete_assignment():
 
     return redirect("student_tracker")
 
+# In Beta - planned to track assignment grades
 @app.route("/gradebook", methods=["GET", "POST"])
 @login_required
 def gradebook():
@@ -647,6 +672,7 @@ def gradebook():
     else:
         return render_template("gradebook.html")
 
+# Sample data to fill database for testing/demos
 @app.route("/values", methods=["POST"])
 def values():
     datetime = time.asctime(time.localtime(time.time()))
